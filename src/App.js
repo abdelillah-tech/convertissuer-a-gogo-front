@@ -1,25 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import MenuAppBar from './common/MenuAppBar';
+import Login from './user/Login';
+import Signup from './user/Signup';
+import Profile from './user/Profile';
+import Home from './common/Home';
+import './styles/App.css';
+import { Switch, Route } from "react-router-dom";
+import Editor from './Playground/Editor';
+import Playground from './Playground/Playground';
+import theme from './styles/Theme';
+import { ThemeProvider } from '@material-ui/core/styles'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+const App = () => {
+    return (
+        <>
+            <ThemeProvider theme={theme}>
+                <MenuAppBar />
+                <Switch>
+                    <Route path="/" exact>
+                        <Home />
+                    </Route>
+                    <Route path="/login" >
+                        <Login />
+                    </Route>
+                    <Route path="/signup">
+                        <Signup />
+                    </Route>
+                    <Route path="/profile">
+                        <Profile />
+                    </Route>
+                    <Route path="/Editor">
+                        <Editor />
+                    </Route>
+                    <Route path="/Playground">
+                        <Playground />
+                    </Route>
+                </Switch>
+            </ThemeProvider>
+        </>
+    );
 }
 
 export default App;
