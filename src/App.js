@@ -3,13 +3,14 @@ import MenuAppBar from './common/MenuAppBar';
 import Login from './user/Login';
 import Signup from './user/Signup';
 import Profile from './user/Profile';
-import Home from './common/Home';
+import Home from './home/Home';
 import './styles/App.css';
 import { Switch, Route } from "react-router-dom";
 import Editor from './Playground/Editor';
 import Playground from './Playground/Playground';
 import theme from './styles/Theme';
 import { ThemeProvider } from '@material-ui/core/styles'
+import AlertComp from './common/Alerts'
 
 
 const App = () => {
@@ -17,6 +18,7 @@ const App = () => {
         <>
             <ThemeProvider theme={theme}>
                 <MenuAppBar />
+                <AlertComp />
                 <Switch>
                     <Route path="/" exact>
                         <Home />

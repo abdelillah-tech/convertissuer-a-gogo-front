@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import TextField from '@material-ui/core/TextField';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
@@ -11,6 +11,16 @@ import { ACCESS_TOKEN } from '../constants/index';
 import AuthService from '../api/Auth';
 import { useHistory } from 'react-router';
 import { Typography } from '@material-ui/core';
+import PubSub from 'pubsub-js';
+import alertType from '../common/AlertTypes';
+import { useForm, Controller } from 'react-hook-form';
+import {
+    EMAIL_PATTERN,
+    EMAIL_MIN_LENGTH,
+    EMAIL_MAX_LENGTH,
+    PASSWORD_MIN_LENGTH,
+    PASSWORD_MAX_LENGTH
+} from '../constants';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,70 +45,115 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(10),
         maxWidth: 345,
     },
-}),
+})
 );
+
 
 const Login = () => {
     const classes = useStyles();
-    const [email, setemail] = useState('');
-    const [password, setPassword] = useState('');
-    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-    const [helperText, setHelperText] = useState('');
+
+    const { handleSubmit, control, formState: { errors }, reset } = useForm();
+
     const history = useHistory();
 
-    useEffect(() => {
-        if (email.trim() && password.trim()) {
-            setIsButtonDisabled(false);
-        } else {
-            setIsButtonDisabled(true);
-        }
-    }, [email, password]);
-
-
-    const handleSubmit = event => {
-        event.preventDefault();
-        AuthService.login(email, password)
+    const onSubmit = data => {
+        AuthService.login(data.email, data.password)
             .then((response) => {
-                localStorage.setItem(ACCESS_TOKEN, response.data.accessToken);
+                localStorage.setItem(ACCESS_TOKEN, response.data.token);
                 history.push("/playground");
             }).catch(e => {
-                console.log(e);
-                if (e.response.status === 401) {
-                    setHelperText('Incorrect name or password');
+                if (e.response.data.statusCode === 403) {
+                    PubSub.publish('alert', {
+                        alertType: alertType.error,
+                        message: 'Incorrect name or password'
+                    })
                 } else {
-                    setHelperText('Sorry! Something went wrong. Please try again!');
+                    PubSub.publish('alert', {
+                        alertType: alertType.error,
+                        message: 'Sorry! Something went wrong. Please try again!'
+                    })
                 }
+                reset(
+                    {
+                        email: '',
+                        password: ''
+                    },
+                    {
+                        errors: true,
+                        dirtyFields: true
+                    }
+                );
             });
 
     }
 
     return (
         <div className={classes.root}>
-            <form className={classes.container} onSubmit={handleSubmit} autoComplete="off" >
+            <form className={classes.container} onSubmit={handleSubmit(onSubmit)} autoComplete="off" >
                 <Card className={classes.card}>
-                    <CardHeader 
+                    <CardHeader
                         color="primary"
-                        className={classes.header} 
+                        className={classes.header}
                         title="Login" />
                     <CardContent>
                         <div>
-                            <TextField
-                                fullWidth
-                                id="email"
-                                type="text"
-                                label="email"
-                                placeholder="email"
-                                margin="normal"
-                                onChange={(e) => setemail(e.target.value)}
+                            <Controller
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        fullWidth
+                                        type='email'
+                                        margin='normal'
+                                        placeholder='Email'
+                                        helperText={errors.email ? errors.email.message : ''}
+                                        error={!!errors.email}
+                                    />
+                                )}
+                                name="email"
+                                control={control}
+                                defaultValue=''
+                                rules={{
+                                    required: 'Required',
+                                    minLength: {
+                                        value: EMAIL_MIN_LENGTH,
+                                        message: `Your input must exceed ${EMAIL_MIN_LENGTH} characters`,
+                                    },
+                                    maxLength: {
+                                        value: EMAIL_MAX_LENGTH,
+                                        message: `Your input must exceed ${EMAIL_MAX_LENGTH} characters`,
+                                    },
+                                    pattern: {
+                                        value: EMAIL_PATTERN,
+                                        message: "Wrong format"
+                                    },
+                                }}
                             />
-                            <TextField
-                                fullWidth
-                                id="password"
-                                type="password"
-                                label="Password"
-                                placeholder="Password"
-                                margin="normal"
-                                onChange={(e) => setPassword(e.target.value)}
+                            <Controller
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        fullWidth
+                                        type='password'
+                                        margin='normal'
+                                        placeholder='Password'
+                                        helperText={errors.password ? errors.password.message : ''}
+                                        error={!!errors.password}
+                                    />
+                                )}
+                                name="password"
+                                control={control}
+                                defaultValue=""
+                                rules={{
+                                    required: 'Required',
+                                    minLength: {
+                                        value: PASSWORD_MIN_LENGTH,
+                                        message: `Your input must exceed ${PASSWORD_MIN_LENGTH} characters`,
+                                    },
+                                    maxLength: {
+                                        value: PASSWORD_MAX_LENGTH,
+                                        message: `Your input must exceed ${PASSWORD_MAX_LENGTH} characters`,
+                                    },
+                                }}
                             />
                         </div>
                     </CardContent>
@@ -109,12 +164,10 @@ const Login = () => {
                             color="primary"
                             type="submit"
                             className={classes.loginBtn}
-                            disabled={isButtonDisabled}
                         >
                             Login
                         </Button>
                     </CardActions>
-                    <p style={{ color: "red" }}>{helperText}</p>
                 </Card>
                 <Typography>
                     Or <Link href="/signup">Register now!</Link>

@@ -1,16 +1,16 @@
 import { API_BASE_URL, ACCESS_TOKEN } from '../constants';
 import API from './API'
 
-const getCurrentUser = () => {
+const execute = (language, code) => {
     return API
-        .get(API_BASE_URL + "/user/me", {
+        .post(API_BASE_URL + "/execute/", {
+            language: language,
+            code: code,
+        },{
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
             }
-        })
-        .then((response) => {
-            return response.data;
         });
 }
 
-export default { getCurrentUser }
+export default { execute, };

@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 
 import brace from 'brace';
 
 import AceEditor from 'react-ace';
+import PubSub from 'pubsub-js';
+import alertType from '../common/AlertTypes';
 
 import 'brace/mode/javascript';
-import 'brace/mode/java';
 import 'brace/mode/python';
 
 import 'brace/theme/monokai';
@@ -23,6 +24,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
+import ExecuteService from '../api/Executor';
 import { Typography } from '@material-ui/core';
 
 
@@ -69,7 +71,6 @@ const Editor = () => {
     const langages = [
         'javascript',
         'python',
-        'java',
     ]
 
     const [theme, setTheme] = useState(themes[0]);
@@ -79,6 +80,14 @@ const Editor = () => {
     const [fontSize, setFontSize] = useState(17);
 
     const [results, setResults] = useState(null);
+
+    const [outputColor, setOutputColor] = useState('white')
+
+    const [code, setCode] = useState('');
+
+
+
+    const [helperText, setHelperText] = useState('');
 
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
@@ -91,12 +100,34 @@ const Editor = () => {
         },
     };
 
+    const onChange = (value) => {
+        setCode(value)
+    }
+
     const handleChangeTheme = (event) => {
         setTheme(event.target.value);
     }
 
     const handleChangeLangage = (event) => {
         setLangage(event.target.value);
+    }
+
+    const handleExecute = () => {
+        ExecuteService.execute(langage, code)
+            .then((response) => {
+                if(!response.data.result.result.stderr){
+                    setResults(response.data.result.result.stdout)
+                    setOutputColor("white")
+                } else {
+                    setResults(`${response.data.result.result.stdout}\n${response.data.result.result.stderr}`);
+                    setOutputColor("red")
+                }
+            }).catch(e => {
+                PubSub.publish('alert',{
+                    alertType : alertType.error,
+                    message : 'Sorry! Something went wrong. Please try again!'
+                })
+            });
     }
 
     const classes = useStyles();
@@ -147,7 +178,7 @@ const Editor = () => {
                         component="label"
                     >
                         <Typography>Upload File</Typography>
-                    <input
+                        <input
                             type="file"
                             hidden
                         />
@@ -158,9 +189,10 @@ const Editor = () => {
                         size="large"
                         color="primary"
                         className={classes.formControl}
+                        onClick={handleExecute}
                     >
                         <Typography>Execute</Typography>
-                </Button>
+                    </Button>
                 </div>
             </div>
             <div className={classes.editorContainer}>
@@ -173,6 +205,8 @@ const Editor = () => {
                     editorProps={{
                         $blockScrolling: true
                     }}
+                    onChange={onChange}
+                    value={code}
                     setOptions={{
                         enableBasicAutocompletion: true,
                         enableLiveAutocompletion: true,
@@ -184,6 +218,7 @@ const Editor = () => {
                 <AceEditor
                     className={classes.aceEditor}
                     mode="text"
+                    style={{color: outputColor}}
                     theme={theme}
                     name="output"
                     fontSize={fontSize + 2}

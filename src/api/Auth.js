@@ -1,8 +1,8 @@
 import { API_BASE_URL } from '../constants';
-import axios from 'axios';
+import API from './API'
 
 const signup = (name, email, password) => {
-    return axios
+    return API
         .post(API_BASE_URL + "/authentication/register/", {
             name: name,
             email: email,
@@ -11,7 +11,7 @@ const signup = (name, email, password) => {
 }
 
 const login = (email, password) => {
-    return axios
+    return API
         .post(API_BASE_URL + "/authentication/login/", {
             email: email,
             password: password

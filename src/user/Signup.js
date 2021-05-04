@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -8,14 +8,21 @@ import Button from '@material-ui/core/Button';
 import CardHeader from '@material-ui/core/CardHeader';
 import AuthService from '../api/Auth';
 import Link from '@material-ui/core/Link';
-import { 
-    NAME_MIN_LENGTH, NAME_MAX_LENGTH, 
-    USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH,
+import {
+    NAME_MIN_LENGTH, 
+    NAME_MAX_LENGTH,
+    EMAIL_MIN_LENGTH,
     EMAIL_MAX_LENGTH,
-    PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH
+    EMAIL_PATTERN,
+    PASSWORD_MIN_LENGTH, 
+    PASSWORD_MAX_LENGTH
 } from '../constants';
 import { useHistory } from 'react-router';
 import { Typography } from '@material-ui/core';
+
+import PubSub from 'pubsub-js';
+import alertType from '../common/AlertTypes';
+import { Controller, useForm } from 'react-hook-form';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -44,33 +51,26 @@ const useStyles = makeStyles((theme) => ({
 );
 
 const Signup = () => {
+
+    const { handleSubmit, control, formState: { errors }, reset } = useForm();
     const history = useHistory();
     const classes = useStyles();
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-    const [helperText, setHelperText] = useState('');
-    const [error, setError] = useState(false);
 
-    useEffect(() => {
-        if (name.trim() && email.trim() && password.trim()) {
-            setIsButtonDisabled(false);
-        } else {
-            setIsButtonDisabled(true);
-        }
-    }, [password, name, email]);
-
-    const handleSignup = event => {
-        event.preventDefault();
-        AuthService.signup(name, email, password)
+    const onSubmit = data => {
+        AuthService.signup(data.name, data.email, data.password)
             .then((response) => {
                 history.push("/login");
             }).catch(e => {
-                if (e.response.status === 401) {
-                    setHelperText('Incorrect username or password');
+                if (e.response.data.statusCode === 403) {
+                    PubSub.publish('alert', {
+                        alertType: alertType.error,
+                        message: 'Incorrect username or password'
+                    })
                 } else {
-                    setHelperText('Sorry! Something went wrong. Please try again!');
+                    PubSub.publish('alert', {
+                        alertType: alertType.error,
+                        message: 'Sorry! Something went wrong. Please try again!'
+                    })
                 }
             });
     };
@@ -78,41 +78,94 @@ const Signup = () => {
     return (
         <React.Fragment>
             <div className={classes.root}>
-                <form className={classes.container} noValidate autoComplete="off" onSubmit={handleSignup}>
+                <form className={classes.container} noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
                     <Card className={classes.card}>
                         <CardHeader className={classes.header} title="Signup" />
                         <CardContent>
                             <div>
-                                <TextField
-                                    error={error}
-                                    fullWidth
-                                    id="name"
-                                    type="text"
-                                    label="Name"
-                                    placeholder="Name"
-                                    margin="normal"
-                                    onChange={(e) => setName(e.target.value)}
+                                <Controller
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            fullWidth
+                                            type='name'
+                                            margin='normal'
+                                            placeholder="Maxime d'Harboullé"
+                                            helperText={errors.name ? errors.name.message : ''}
+                                            error={!!errors.name}
+                                        />
+                                    )}
+                                    name="name"
+                                    control={control}
+                                    defaultValue=""
+                                    rules={{
+                                        required: 'Required',
+                                        minLength: {
+                                            value: NAME_MIN_LENGTH,
+                                            message: `Your input must exceed ${NAME_MIN_LENGTH} characters`,
+                                        },
+                                        maxLength: {
+                                            value: NAME_MAX_LENGTH,
+                                            message: `Your input must exceed ${NAME_MAX_LENGTH} characters`,
+                                        },
+                                    }} />
+                                <Controller
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            fullWidth
+                                            type='email'
+                                            margin='normal'
+                                            placeholder='maxime@gmail.com'
+                                            helperText={errors.email ? errors.email.message : ''}
+                                            error={!!errors.email}
+                                        />
+                                    )}
+                                    name="email"
+                                    control={control}
+                                    defaultValue=''
+                                    rules={{
+                                        required: 'Required',
+                                        minLength: {
+                                            value: EMAIL_MIN_LENGTH,
+                                            message: `Your input must exceed ${EMAIL_MIN_LENGTH} characters`,
+                                        },
+                                        maxLength: {
+                                            value: EMAIL_MAX_LENGTH,
+                                            message: `Your input must exceed ${EMAIL_MAX_LENGTH} characters`,
+                                        },
+                                        pattern: {
+                                            value: EMAIL_PATTERN,
+                                            message: "Wrong format"
+                                        },
+                                    }}
                                 />
-                                <TextField
-                                    error={error}
-                                    fullWidth
-                                    id="email"
-                                    type="email"
-                                    label="Email"
-                                    placeholder="Email"
-                                    margin="normal"
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                                <TextField
-                                    error={error}
-                                    fullWidth
-                                    id="password"
-                                    type="password"
-                                    label="Password"
-                                    placeholder="Password"
-                                    margin="normal"
-                                    helperText={helperText}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                <Controller
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            fullWidth
+                                            type='password'
+                                            margin='normal'
+                                            placeholder='Password'
+                                            helperText={errors.password ? errors.password.message : ''}
+                                            error={!!errors.password}
+                                        />
+                                    )}
+                                    name="password"
+                                    control={control}
+                                    defaultValue=""
+                                    rules={{
+                                        required: 'Required',
+                                        minLength: {
+                                            value: PASSWORD_MIN_LENGTH,
+                                            message: `Your input must exceed ${PASSWORD_MIN_LENGTH} characters`,
+                                        },
+                                        maxLength: {
+                                            value: PASSWORD_MAX_LENGTH,
+                                            message: `Your input must exceed ${PASSWORD_MAX_LENGTH} characters`,
+                                        },
+                                    }} 
                                 />
                             </div>
                         </CardContent>
@@ -120,10 +173,10 @@ const Signup = () => {
                             <Button
                                 variant="contained"
                                 size="large"
-                                color="secondary"
+                                color="primary"
                                 type="submit"
                                 className={classes.signupBtn}
-                                disabled={isButtonDisabled}>
+                            >
                                 Signup
                         </Button>
                         </CardActions>
