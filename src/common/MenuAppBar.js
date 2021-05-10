@@ -9,7 +9,8 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { Link } from 'react-router-dom';
-import { ACCESS_TOKEN, APP_NAME } from '../constants';
+import { APP_NAME } from '../constants';
+import { Context } from "../common/Store";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -37,8 +38,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function MenuAppBar() {
+    const [state, dispatch] = React.useContext(Context);
     const classes = useStyles();
-    const [auth, setAuth] = React.useState(true);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const [menu, setMenu] = React.useState("");
@@ -48,7 +49,7 @@ export default function MenuAppBar() {
     }, [anchorEl]);
 
     const handleMenuItems = () => {
-        if (!localStorage.getItem(ACCESS_TOKEN)) {
+        if (!state.isAuthenticated) {
             setMenu([
                 <MenuItem key="login" onClick={handleClose}>
                     <Link to="/login" className={classes.links}>
@@ -61,17 +62,20 @@ export default function MenuAppBar() {
                     </Link>
                 </MenuItem>
             ]);
-            setAuth(false);
         }
         else {
             setMenu([
-                <MenuItem key="logout" onClick={handleLogout}>
+                <MenuItem key="logout"
+                    onClick={() => {
+                        dispatch({
+                            type: "LOGOUT"
+                        })}
+                    }>
                     <Link to="/" className={classes.links}>
                         Logout
                     </Link>
                 </MenuItem>,
             ]);
-            setAuth(true);
         }
     }
 
@@ -82,12 +86,6 @@ export default function MenuAppBar() {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
-    const handleLogout = () => {
-        localStorage.removeItem(ACCESS_TOKEN);
-        setAuth(false);
-        handleClose();
-    }
 
     return (
         <div className={classes.root}>

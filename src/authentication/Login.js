@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -7,13 +7,13 @@ import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 import CardHeader from '@material-ui/core/CardHeader';
 import Link from '@material-ui/core/Link';
-import { ACCESS_TOKEN } from '../constants/index';
 import AuthService from '../api/Auth';
 import { useHistory } from 'react-router';
 import { Typography } from '@material-ui/core';
 import PubSub from 'pubsub-js';
 import alertType from '../common/AlertTypes';
 import { useForm, Controller } from 'react-hook-form';
+import { Context } from "../common/Store";
 import {
     EMAIL_PATTERN,
     EMAIL_MIN_LENGTH,
@@ -45,11 +45,13 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(10),
         maxWidth: 345,
     },
-})
-);
+}));
 
 
 const Login = () => {
+
+    const [ state, dispatch ] = useContext(Context);
+
     const classes = useStyles();
 
     const { handleSubmit, control, formState: { errors }, reset } = useForm();
@@ -58,10 +60,14 @@ const Login = () => {
 
     const onSubmit = data => {
         AuthService.login(data.email, data.password)
-            .then((response) => {
-                localStorage.setItem(ACCESS_TOKEN, response.data.token);
+            .then(resJson => {
+                dispatch({
+                    type: "LOGIN",
+                    payload: resJson
+                })
                 history.push("/playground");
             }).catch(e => {
+                console.log(JSON.stringify(e));
                 if (e.response.data.statusCode === 403) {
                     PubSub.publish('alert', {
                         alertType: alertType.error,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -26,6 +26,7 @@ import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import ExecuteService from '../api/Executor';
 import { Typography } from '@material-ui/core';
+import { Context } from "../common/Store";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -85,9 +86,8 @@ const Editor = () => {
 
     const [code, setCode] = useState('');
 
-
-
-    const [helperText, setHelperText] = useState('');
+    const [state, dispatch] = useContext(Context);
+    
 
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
@@ -113,9 +113,10 @@ const Editor = () => {
     }
 
     const handleExecute = () => {
-        ExecuteService.execute(langage, code)
+        ExecuteService.execute(langage, code, state.token)
             .then((response) => {
                 if(!response.data.result.result.stderr){
+                    console.log(JSON.stringify(response));
                     setResults(response.data.result.result.stdout)
                     setOutputColor("white")
                 } else {
