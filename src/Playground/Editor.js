@@ -120,7 +120,7 @@ const Editor = () => {
                     setResults(response.data.result.result.stdout)
                     setOutputColor("white")
                 } else {
-                    setResults(`${response.data.result.result.stdout}\n${response.data.result.result.stderr}`);
+                    setResults(`${response.data.result.result.stdout ? response.data.result.result.stdout : ''}\n\n${response.data.result.result.stderr}`);
                     setOutputColor("red")
                 }
             }).catch(e => {
