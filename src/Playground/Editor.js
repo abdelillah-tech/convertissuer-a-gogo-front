@@ -70,8 +70,8 @@ const Editor = () => {
     ]
 
     const langages = [
-        'javascript',
-        'python',
+        'Javascript',
+        'Python',
     ]
 
     const [theme, setTheme] = useState(themes[0]);
@@ -199,7 +199,7 @@ const Editor = () => {
             <div className={classes.editorContainer}>
                 <AceEditor
                     className={classes.aceEditor}
-                    mode={langage}
+                    mode={langage.toLowerCase()}
                     theme={theme}
                     name="editor"
                     fontSize={fontSize}
