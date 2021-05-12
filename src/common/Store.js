@@ -16,7 +16,9 @@ const Store = ({children}) => {
             dispatch({
                 type: 'LOGIN',
                 payload: {
-                    token
+                    data: {
+                        token
+                    }
                 }
             })
         }

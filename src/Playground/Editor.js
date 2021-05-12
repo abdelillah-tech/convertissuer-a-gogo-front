@@ -116,7 +116,6 @@ const Editor = () => {
         ExecuteService.execute(langage, code, state.token)
             .then((response) => {
                 if(!response.data.result.result.stderr){
-                    console.log(JSON.stringify(response));
                     setResults(response.data.result.result.stdout)
                     setOutputColor("white")
                 } else {
