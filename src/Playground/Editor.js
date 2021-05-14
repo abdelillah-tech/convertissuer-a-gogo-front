@@ -130,10 +130,17 @@ const Editor = () => {
                     setOutputColor("red")
                 }
             }).catch(e => {
-                PubSub.publish('alert',{
-                    alertType : alertType.error,
-                    message : 'Sorry! Something went wrong. Please try again!'
-                })
+                if (e.response.data.statusCode === 400) {
+                    PubSub.publish('alert', {
+                        alertType: alertType.error,
+                        message: e.response.data.message.join(", ")
+                    })
+                } else {
+                    PubSub.publish('alert', {
+                        alertType: alertType.error,
+                        message: 'Sorry! Something went wrong. Please try again!'
+                    })
+                }
             });
     }
 

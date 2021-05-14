@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import MenuAppBar from './common/MenuAppBar';
 import Login from './authentication/Login';
 import Signup from './authentication/Signup';
@@ -14,7 +14,7 @@ import { Context } from './common/Store';
 
 const App = () => {
 
-    const [state, dispatch] = useContext(Context);
+    const [state ] = useContext(Context);
 
     return (
         <ThemeProvider theme={theme}>

@@ -16,3 +16,5 @@ export const PASSWORD_MAX_LENGTH = 20;
 
 export const APP_NAME = 'Convertisseur à gogo';
 export const APP_DESC = 'This is Convertisseur à gogo app created using: React, NestJS and postgresql';
+
+export const ALERT_SHOW_TIME = 3000 //ms

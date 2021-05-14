@@ -70,7 +70,7 @@ const Login = () => {
                 if (e.response.data.statusCode === 403) {
                     PubSub.publish('alert', {
                         alertType: alertType.error,
-                        message: 'Incorrect name or password'
+                        message: e.response.data.message
                     })
                 } else {
                     PubSub.publish('alert', {

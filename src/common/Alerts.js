@@ -4,7 +4,9 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import React from 'react';
 import PubSub from 'pubsub-js';
-
+import {
+    ALERT_SHOW_TIME
+} from '../constants';
 class AlertComp extends React.Component {
 
     constructor(props) {
@@ -28,13 +30,17 @@ class AlertComp extends React.Component {
             alertType: data.alertType,
             message: data.message,
         });
+
+        setTimeout(() => {
+            this.handleClose()
+        }, ALERT_SHOW_TIME)
     });
 
     unsubAlert = PubSub.unsubscribe(alert);
 
     render() {
         return (
-            <Collapse in={this.state.open} zindex="tooltip">
+            <Collapse in={this.state.open} zindex="tooltip" timeout={300}>
                 <Alert severity={this.state.alertType}
                     action={
                         <IconButton
