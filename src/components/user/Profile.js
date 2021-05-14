@@ -58,7 +58,6 @@ const Profile = () => {
     const [id, setId] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    // const [infos, setSomeInfos] = useState('');
     const [state, dispatch] = useContext(Context);
 
     

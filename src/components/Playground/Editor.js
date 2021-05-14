@@ -75,6 +75,7 @@ const Editor = () => {
     const langages = [
         'javascript',
         'python',
+        'c'
     ]
 
     const [theme, setTheme] = useState(themes[0]);
