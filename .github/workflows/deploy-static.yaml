@@ -1,25 +1,39 @@
-name: Azure Static Web Apps CI/CD
-
+name: Upload To Azure Blob Storage
 on:
   push:
     branches:
-      - main
-
+      - master
 jobs:
   build:
-      runs-on: ubuntu-latest
-      name: Deploy front
-      steps:
-        - uses: actions/checkout@v2
-        - uses: Azure/static-web-apps-deploy@v1
-          name: Azure Static Web Apps Deploy
-          with:
-            action: 'upload'
-            app_location: '/'
-            azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APP_TOKEN }}
-            output_location: 'build'
-            app_build_command: 'npm run build'
-            repo_token: ${{ secrets.GITHUB_TOKEN }} 
-            #routes_location: './public'
-
-
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Install dependencies
+        run: npm install    
+      #- name: Test
+      #  run: npm test
+      #  env:
+      #    CI: true
+      - name: Generate build
+        run: npm run build
+      # Share artifact inside workflow
+      - name: Share artifact inside workflow
+        uses: actions/upload-artifact@v1
+        with:
+          name: react-github-actions-build
+          path: build
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: bacongobbler/azure-blob-storage-upload@v1.1.1
+        with:
+          source_dir: react-github-actions-build
+          container_name: '$web'
+          connection_string: ${{ secrets.ConnectionString }}
+          sync: true
