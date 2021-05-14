@@ -65,7 +65,6 @@ const Profile = () => {
         const uid = jwt_decode(state.token).id;
         AuthService.getUserById(uid, state.token)
             .then(response => {
-                console.log(response);
                 setId(response.id);
                 setName(response.name);
                 setEmail(response.email);
