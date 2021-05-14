@@ -28,7 +28,7 @@ class AlertComp extends React.Component {
         this.setState({
             open: true,
             alertType: data.alertType,
-            message: data.message,
+            message: data.message.charAt(0).toUpperCase() + data.message.slice(1),
         });
 
         setTimeout(() => {
