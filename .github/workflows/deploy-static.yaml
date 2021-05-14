@@ -21,19 +21,9 @@ jobs:
       #    CI: true
       - name: Generate build
         run: npm run build
-      # Share artifact inside workflow
-      - name: Share artifact inside workflow
-        uses: actions/upload-artifact@v1
-        with:
-          name: react-github-actions-build
-          path: build
-  upload:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
       - uses: bacongobbler/azure-blob-storage-upload@v1.1.1
         with:
-          source_dir: react-github-actions-build
+          source_dir: build
           container_name: '$web'
           connection_string: ${{ secrets.ConnectionString }}
           sync: true
