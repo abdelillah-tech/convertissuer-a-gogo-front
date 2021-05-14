@@ -65,16 +65,27 @@ export default function MenuAppBar() {
         }
         else {
             setMenu([
+                <MenuItem key="playground" onClick={handleClose}>
+                    <Link to="/playground" className={classes.links}>
+                        Playground
+                    </Link>
+                </MenuItem>,
+                <MenuItem key="profile" onClick={handleClose}>
+                    <Link to="/profile" className={classes.links}>
+                        Profile
+                    </Link>
+                </MenuItem>,
                 <MenuItem key="logout"
                     onClick={() => {
                         dispatch({
                             type: "LOGOUT"
-                        })}
-                    }>
+                        })
+                        handleClose()    
+                    }}>
                     <Link to="/" className={classes.links}>
                         Logout
                     </Link>
-                </MenuItem>,
+                </MenuItem>
             ]);
         }
     }

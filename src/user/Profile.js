@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import AuthService from '../api/User';
 import Avatar from '@material-ui/core/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
@@ -6,6 +6,8 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import CardHeader from '@material-ui/core/CardHeader';
+import { Context } from "../common/Store";
+import jwt_decode from "jwt-decode";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -49,25 +51,26 @@ const useStyles = makeStyles((theme) => ({
 );
 
 const Profile = () => {
+
     const classes = useStyles();
+    const [id, setId] = useState('');
     const [name, setName] = useState('');
-    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     // const [infos, setSomeInfos] = useState('');
+    const [state, dispatch] = useContext(Context);
+
     
     
     useEffect(() => {
-        AuthService.getCurrentUser()
+        const uid = jwt_decode(state.token).id;
+        AuthService.getUserById(uid, state.token)
             .then(response => {
+                console.log(response);
+                setId(response.id);
                 setName(response.name);
-                setUsername(response.username);
                 setEmail(response.email);
             });
-        // AuthService.getSomeInfos()
-        //     .then(response => {
-        //         setSomeInfos(response.data);
-        //     });
-    }, [name, username, email]);
+    }, []);
     
 
     return (
@@ -81,11 +84,11 @@ const Profile = () => {
                     avatar={
                         <Avatar className={classes.avatar}>{name.charAt(0).toUpperCase()}</Avatar>
                     }
-                    title={email}
-                    subheader={"@" + username}
+                    title={`${id} - ${email}`}
+                    subheader={`@${name}`}
                 />
                 <CardContent>
-                    <Typography variant="h4" align="center">Score:</Typography>
+                    <Typography variant="h4" align="center"></Typography>
                     <div>
                         {/*some infos*/}
                     </div>

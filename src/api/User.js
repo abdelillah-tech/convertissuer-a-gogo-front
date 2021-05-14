@@ -13,4 +13,16 @@ const getCurrentUser = () => {
         });
 }
 
-export default { getCurrentUser }
+const getUserById = (uid, token) => {
+    return API
+        .get(`${API_BASE_URL}/user/${uid}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then((response) => {
+            return response.data;
+        });
+}
+
+export default { getCurrentUser, getUserById }
