@@ -8,6 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import CardHeader from '@material-ui/core/CardHeader';
 import { Context } from "../../common/Store";
 import jwt_decode from "jwt-decode";
+import PubSub from 'pubsub-js';
+import alertType from '../../common/AlertTypes';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -68,6 +70,11 @@ const Profile = () => {
                 setId(response.id);
                 setName(response.name);
                 setEmail(response.email);
+            }).catch(e => {
+                PubSub.publish('alert', {
+                    alertType: alertType.error,
+                    message: 'Sorry! Something went wrong. Please try again!'
+                })
             });
     }, []);
     
