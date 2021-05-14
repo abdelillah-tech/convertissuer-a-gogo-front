@@ -67,7 +67,6 @@ const Login = () => {
                 })
                 history.push("/playground");
             }).catch(e => {
-                console.log(JSON.stringify(e));
                 if (e.response.data.statusCode === 403) {
                     PubSub.publish('alert', {
                         alertType: alertType.error,
