@@ -10,7 +10,7 @@ jobs:
       runs-on: ubuntu-latest
       strategy:
         matrix:
-          node-version: [10.x, 12.x, 14.x]
+          node-version: [12.x]
       steps:
         - uses: actions/checkout@v2
         - name: Use Node.js ${{ env.NODE_VERSION }}
@@ -23,9 +23,9 @@ jobs:
             action: 'upload'
             app_location: '/'
             azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APP_TOKEN }}
-            output_location: 'build'# optional
+            output_location: 'build'
             app_build_command: 'npm run build'
-            repo_token: ${{ secrets.GITHUB_TOKEN }}# optional
-            routes_location: './public'
+            repo_token: ${{ secrets.GITHUB_TOKEN }} 
+            #routes_location: './public'
 
 
