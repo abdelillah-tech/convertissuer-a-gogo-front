@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import AuthService from '../api/User';
+import AuthService from '../../api/User';
 import Avatar from '@material-ui/core/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import CardHeader from '@material-ui/core/CardHeader';
-import { Context } from "../common/Store";
+import { Context } from "../../common/Store";
 import jwt_decode from "jwt-decode";
 
 const useStyles = makeStyles((theme) => ({

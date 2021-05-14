@@ -1,16 +1,19 @@
 import React, { useContext } from 'react';
-import MenuAppBar from './common/MenuAppBar';
-import Login from './authentication/Login';
-import Signup from './authentication/Signup';
-import Profile from './user/Profile';
-import Home from './home/Home';
-import './styles/App.css';
+
 import { Switch, Route } from "react-router-dom";
-import Playground from './Playground/Playground';
-import theme from './styles/Theme';
 import { ThemeProvider } from '@material-ui/core/styles';
+import theme from './styles/Theme';
+import './styles/App.css';
+
 import AlertComp from './common/Alerts';
 import { Context } from './common/Store';
+import MenuAppBar from './common/MenuAppBar';
+
+import Login from './components/authentication/Login';
+import Signup from './components/authentication/Signup';
+import Profile from './components/user/Profile';
+import Home from './components/home/Home';
+import Playground from './components/Playground/Playground';
 
 const App = () => {
 

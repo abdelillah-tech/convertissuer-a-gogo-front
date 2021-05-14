@@ -1,12 +1,8 @@
 import React, { useState, useContext } from 'react';
-
 import { makeStyles } from '@material-ui/core/styles';
-
-import brace from 'brace';
-
 import AceEditor from 'react-ace';
 import PubSub from 'pubsub-js';
-import alertType from '../common/AlertTypes';
+import alertType from '../../common/AlertTypes';
 
 import 'brace/mode/javascript';
 import 'brace/mode/python';
@@ -24,10 +20,10 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
-import ExecuteService from '../api/Executor';
+import ExecuteService from '../../api/Executor';
 import SendIcon from '@material-ui/icons/Send';
 import { Typography } from '@material-ui/core';
-import { Context } from "../common/Store";
+import { Context } from "../../common/Store";
 
 
 const useStyles = makeStyles((theme) => ({

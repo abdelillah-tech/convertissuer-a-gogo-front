@@ -7,20 +7,20 @@ import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 import CardHeader from '@material-ui/core/CardHeader';
 import Link from '@material-ui/core/Link';
-import AuthService from '../api/Auth';
+import AuthService from '../../api/Auth';
 import { useHistory } from 'react-router';
 import { Typography } from '@material-ui/core';
 import PubSub from 'pubsub-js';
-import alertType from '../common/AlertTypes';
+import alertType from '../../common/AlertTypes';
 import { useForm, Controller } from 'react-hook-form';
-import { Context } from "../common/Store";
+import { Context } from "../../common/Store";
 import {
     EMAIL_PATTERN,
     EMAIL_MIN_LENGTH,
     EMAIL_MAX_LENGTH,
     PASSWORD_MIN_LENGTH,
     PASSWORD_MAX_LENGTH
-} from '../constants';
+} from '../../constants';
 
 const useStyles = makeStyles((theme) => ({
     root: {

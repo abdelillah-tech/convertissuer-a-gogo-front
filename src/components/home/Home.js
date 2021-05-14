@@ -1,5 +1,5 @@
 import React from 'react';
-import { APP_DESC } from '../constants';
+import { APP_DESC } from '../../constants';
 
 const Home = () => {
     return(

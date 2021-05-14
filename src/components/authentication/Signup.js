@@ -6,7 +6,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 import CardHeader from '@material-ui/core/CardHeader';
-import AuthService from '../api/Auth';
+import AuthService from '../../api/Auth';
 import Link from '@material-ui/core/Link';
 import {
     NAME_MIN_LENGTH, 
@@ -16,12 +16,12 @@ import {
     EMAIL_PATTERN,
     PASSWORD_MIN_LENGTH, 
     PASSWORD_MAX_LENGTH
-} from '../constants';
+} from '../../constants';
 import { useHistory } from 'react-router';
 import { Typography } from '@material-ui/core';
 
 import PubSub from 'pubsub-js';
-import alertType from '../common/AlertTypes';
+import alertType from '../../common/AlertTypes';
 import { Controller, useForm } from 'react-hook-form';
 
 const useStyles = makeStyles((theme) => ({
