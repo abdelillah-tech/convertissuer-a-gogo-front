@@ -25,6 +25,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import ExecuteService from '../api/Executor';
+import SendIcon from '@material-ui/icons/Send';
 import { Typography } from '@material-ui/core';
 import { Context } from "../common/Store";
 
@@ -56,6 +57,12 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1),
         minWidth: 120,
         maxWidth: 300,
+    },
+    
+    flexEven: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
     },
 }));
 
@@ -191,7 +198,7 @@ const Editor = () => {
                         className={classes.formControl}
                         onClick={handleExecute}
                     >
-                        <Typography>Execute</Typography>
+                        <Typography className={classes.flexEven}>Execute <SendIcon/> </Typography>
                     </Button>
                 </div>
             </div>

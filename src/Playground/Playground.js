@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 
 function GridItem({ classes }) {
     return (
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={3} >
             <Paper className={classes.paper}>item</Paper>
         </Grid>
     );
@@ -42,7 +42,7 @@ const Playground = () => {
         <div>
             <Grid container spacing={1}>
                 <Grid item className={classes.editor}>
-                    <Editor classes={classes.paper}/>
+                    <Editor classes={classes.paper} />
                 </Grid>
                 <Grid item className={classes.reader}>
                     <GridItem classes={classes} />
