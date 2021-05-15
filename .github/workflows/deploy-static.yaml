@@ -1,4 +1,4 @@
-name: Upload To Azure Blob Storage
+name: Upload To Azure Static Web App
 on:
   push:
     branches:
@@ -9,23 +9,13 @@ jobs:
     steps:
       - name: Clone repository
         uses: actions/checkout@v2
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
+      - name: Build And Deploy
+        id: builddeploy
+        uses: Azure/static-web-apps-deploy@v0.0.1-preview
         with:
-          node-version: 12.x
-      - name: Install dependencies
-        run: yarn install    
-      #- name: Test
-      #  run: npm test
-      #  env:
-      #    CI: true
-      - name: Generate build
-        run: yarn build
-        env:
-          CI: false
-      - uses: bacongobbler/azure-blob-storage-upload@v1.1.1
-        with:
-          source_dir: build
-          container_name: '$web'
-          connection_string: ${{ secrets.ConnectionString }}
-          sync: true
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APP_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: 'upload'
+          app_build_command: 'yarn build'
+          app_location: '/' 
+          output_location: 'build' 
