@@ -87,7 +87,7 @@ const Editor = () => {
 
     const [theme, setTheme] = useState(themes[0]);
 
-    const [language, setLanguage] = useState(languages[1]);
+    const [language, setLanguage] = useState(localStorage.getItem("language") || languages[1]);
 
     const [fontSize, setFontSize] = useState(17);
 
@@ -126,7 +126,9 @@ const Editor = () => {
     }
 
     const handleChangeLanguage = (event) => {
+        localStorage.setItem("language", event.target.value);
         setLanguage(event.target.value);
+        setCode(startup.get(event.target.value))
     }
     
     const handleExecute = () => {
