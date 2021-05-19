@@ -67,7 +67,7 @@ const Login = () => {
                 })
                 history.push("/playground");
             }).catch(e => {
-                if (e.response.data.statusCode === 403) {
+                if (e.response && e.response.data && e.response.data.statusCode === 403) {
                     PubSub.publish('alert', {
                         alertType: alertType.error,
                         message: e.response.data.message

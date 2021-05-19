@@ -24,6 +24,10 @@ import ExecuteService from '../../api/Executor';
 import SendIcon from '@material-ui/icons/Send';
 import { Typography } from '@material-ui/core';
 import { Context } from "../../common/Store";
+import { CircularProgressWithLabel } from "../../common/CircularProgressWithLabel"
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+import { CODE_EXEC_COOLDOWN } from "../../constants"
 
 
 const useStyles = makeStyles((theme) => ({
@@ -72,23 +76,32 @@ const Editor = () => {
         'twilight',
     ]
 
-    const langages = [
+    const languages = [
         'javascript',
         'python',
-        'c'
     ]
+
+    const startup = new Map();
+    startup.set('javascript', 'console.log("Hello World!")')
+    startup.set('python', 'print("Hello World!")')
 
     const [theme, setTheme] = useState(themes[0]);
 
-    const [langage, setLangage] = useState(langages[1]);
+    const [language, setLanguage] = useState(languages[1]);
 
     const [fontSize, setFontSize] = useState(17);
 
     const [results, setResults] = useState(null);
 
+    const [codeExecTime, setCodeExecTime] = useState(0);
+
+    const [waitExecuteResponse, setWaitExecuteResponse] = useState(false);
+    const [executeTimer, setExecuteTimer] = useState(false);
+    const [timerValue, setTimerValue] = useState(0);
+
     const [outputColor, setOutputColor] = useState('white')
 
-    const [code, setCode] = useState('');
+    const [code, setCode] = useState(startup.get(language));
 
     const [state, dispatch] = useContext(Context);
     
@@ -112,21 +125,32 @@ const Editor = () => {
         setTheme(event.target.value);
     }
 
-    const handleChangeLangage = (event) => {
-        setLangage(event.target.value);
+    const handleChangeLanguage = (event) => {
+        setLanguage(event.target.value);
     }
-
+    
     const handleExecute = () => {
-        ExecuteService.execute(langage, code, state.token)
+        setWaitExecuteResponse(true)
+        ExecuteService.execute(language, code, state.token)
             .then((response) => {
                 if(!response.data.result.result.stderr){
+
                     setResults(response.data.result.result.stdout)
+                    setCodeExecTime(response.data.result.result.executionTime)
                     setOutputColor("white")
                 } else {
                     setResults(`${response.data.result.result.stdout ? response.data.result.result.stdout : ''}\n\n${response.data.result.result.stderr}`);
+                    setCodeExecTime(response.data.result.result.executionTime)
                     setOutputColor("red")
                 }
+
+                setWaitExecuteResponse(false)
+                startTimer(CODE_EXEC_COOLDOWN)
+                
+
             }).catch(e => {
+                setWaitExecuteResponse(false)
+                startTimer(CODE_EXEC_COOLDOWN)
                 if (e.response.data.statusCode === 400) {
                     PubSub.publish('alert', {
                         alertType: alertType.error,
@@ -142,6 +166,18 @@ const Editor = () => {
     }
 
     const classes = useStyles();
+    
+    const startTimer = async (millis) => {
+        setExecuteTimer(true)
+        for (let i = millis/1000; i > 0; i--) {
+            setTimerValue(rangeMap(i, millis/1000, 0, 100, 0))
+            await new Promise((res,rej) => setTimeout(() => res(), 1000))
+        }
+        setExecuteTimer(false)
+    }
+    const rangeMap = (num, in_min, in_max, out_min, out_max) => {
+        return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    }
 
     return (
         <div className={classes.container}>
@@ -166,18 +202,18 @@ const Editor = () => {
                     </FormControl>
 
                     <FormControl className={classes.formControl}>
-                        <InputLabel id="langage-label">Langage</InputLabel>
+                        <InputLabel id="language-label">Language</InputLabel>
                         <Select
-                            labelId="langage-label"
-                            id="langage"
-                            value={langage}
-                            onChange={handleChangeLangage}
+                            labelId="language-label"
+                            id="language"
+                            value={language}
+                            onChange={handleChangeLanguage}
                             input={<Input />}
                             MenuProps={MenuProps}
                         >
-                            {langages.map((langage) => (
-                                <MenuItem key={langage} value={langage}>
-                                    {langage}
+                            {languages.map((language) => (
+                                <MenuItem key={language} value={language}>
+                                    {language}
                                 </MenuItem>
                             ))}
                         </Select>
@@ -200,16 +236,26 @@ const Editor = () => {
                         size="large"
                         color="primary"
                         className={classes.formControl}
+                        disabled={waitExecuteResponse || executeTimer}
                         onClick={handleExecute}
                     >
-                        <Typography className={classes.flexEven}>Execute <SendIcon/> </Typography>
+                        <Typography component="div" className={classes.flexEven}>
+                            {
+                                waitExecuteResponse 
+                                    ?  <CircularProgress/> 
+                                    : executeTimer 
+                                        ? <CircularProgressWithLabel value={timerValue} /> 
+                                        : <SendIcon />
+                            }
+                        </Typography>
                     </Button>
+                    <span>Execution time: {codeExecTime}ms</span>
                 </div>
             </div>
             <div className={classes.editorContainer}>
                 <AceEditor
                     className={classes.aceEditor}
-                    mode={langage}
+                    mode={language}
                     theme={theme}
                     name="editor"
                     fontSize={fontSize}
@@ -226,20 +272,22 @@ const Editor = () => {
                         tabSize: 2,
                     }}
                 />
-                <AceEditor
-                    className={classes.aceEditor}
-                    mode="text"
-                    style={{color: outputColor}}
-                    theme={theme}
-                    name="output"
-                    fontSize={fontSize + 2}
-                    showPrintMargin={false}
-                    showGutter={false}
-                    highlightActiveLine={false}
-                    value={results}
-                    readOnly={true}
-                    editorProps={{ $blockScrolling: true }}
-                />
+                <div>
+                    <AceEditor
+                        className={classes.aceEditor}
+                        mode="text"
+                        style={{color: outputColor}}
+                        theme={theme}
+                        name="output"
+                        fontSize={fontSize + 2}
+                        showPrintMargin={false}
+                        showGutter={false}
+                        highlightActiveLine={false}
+                        value={results}
+                        readOnly={true}
+                        editorProps={{ $blockScrolling: true }}
+                    />
+                </div>
             </div>
         </div>
     );
