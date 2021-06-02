@@ -1,9 +1,9 @@
-import { API_BASE_URL, ACCESS_TOKEN } from '../constants';
+import { ACCESS_TOKEN } from '../constants';
 import API from './API'
 
 const getCurrentUser = () => {
     return API
-        .get(API_BASE_URL + "/user/me", {
+        .get("/user/me", {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
             }
@@ -15,7 +15,7 @@ const getCurrentUser = () => {
 
 const getUserById = (uid, token) => {
     return API
-        .get(`${API_BASE_URL}/user/${uid}`, {
+        .get(`/user/${uid}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }

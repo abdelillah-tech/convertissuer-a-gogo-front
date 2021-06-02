@@ -21,6 +21,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import ExecuteService from '../../api/Executor';
+import FileUploadService from '../../api/FileUpload';
 import SendIcon from '@material-ui/icons/Send';
 import { Typography } from '@material-ui/core';
 import { Context } from "../../common/Store";
@@ -58,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
         minWidth: 120,
         maxWidth: 300,
     },
-    
+
     flexEven: {
         display: "flex",
         justifyContent: "space-between",
@@ -81,6 +82,8 @@ const Editor = () => {
         'python',
     ]
 
+    const [state, dispatch] = useContext(Context);
+
     const startup = new Map();
     startup.set('javascript', 'console.log("Hello World!")')
     startup.set('python', 'print("Hello World!")')
@@ -99,12 +102,11 @@ const Editor = () => {
     const [executeTimer, setExecuteTimer] = useState(false);
     const [timerValue, setTimerValue] = useState(0);
 
+    const [waitUploadResponse, setWaitUploadResponse] = useState(false);
+
     const [outputColor, setOutputColor] = useState('white')
 
     const [code, setCode] = useState(startup.get(language));
-
-    const [state, dispatch] = useContext(Context);
-    
 
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
@@ -117,7 +119,7 @@ const Editor = () => {
         },
     };
 
-    const onChange = (value) => {
+    const onChangeCode = (value) => {
         setCode(value)
     }
 
@@ -130,12 +132,45 @@ const Editor = () => {
         setLanguage(event.target.value);
         setCode(startup.get(event.target.value))
     }
-    
+
+    const handleChangeFile = (event) => {
+        setWaitUploadResponse(true);
+        dispatch({
+            type: "CHARGEFILE",
+            payload: event.target.files[0]
+        })
+        console.log(JSON.stringify(event.target.value))
+        const data = new FormData()
+        data.append('file', state.selectedFile)
+        FileUploadService.upload(data, state.token)
+            .then((response) => {
+                dispatch({
+                    type: "CHARGESERVERFILE",
+                    payload: response.data.filename
+                })
+
+                setWaitUploadResponse(false)
+            }).catch(e => {
+                setWaitUploadResponse(false)
+                if (e.response.data.statusCode === 400) {
+                    PubSub.publish('alert', {
+                        alertType: alertType.error,
+                        message: e.response.data.message.join(", ")
+                    })
+                } else {
+                    PubSub.publish('alert', {
+                        alertType: alertType.error,
+                        message: 'Sorry! We cannot upload your file. Please try again!'
+                    })
+                }
+            })
+    }
+
     const handleExecute = () => {
         setWaitExecuteResponse(true)
         ExecuteService.execute(language, code, state.token)
             .then((response) => {
-                if(!response.data.result.result.stderr){
+                if (!response.data.result.result.stderr) {
 
                     setResults(response.data.result.result.stdout)
                     setCodeExecTime(response.data.result.result.executionTime)
@@ -148,7 +183,7 @@ const Editor = () => {
 
                 setWaitExecuteResponse(false)
                 startTimer(CODE_EXEC_COOLDOWN)
-                
+
 
             }).catch(e => {
                 setWaitExecuteResponse(false)
@@ -168,15 +203,16 @@ const Editor = () => {
     }
 
     const classes = useStyles();
-    
+
     const startTimer = async (millis) => {
         setExecuteTimer(true)
-        for (let i = millis/1000; i > 0; i--) {
-            setTimerValue(rangeMap(i, millis/1000, 0, 100, 0))
-            await new Promise((res,rej) => setTimeout(() => res(), 1000))
+        for (let i = millis / 1000; i > 0; i--) {
+            setTimerValue(rangeMap(i, millis / 1000, 0, 100, 0))
+            await new Promise((res, rej) => setTimeout(() => res(), 1000))
         }
         setExecuteTimer(false)
     }
+
     const rangeMap = (num, in_min, in_max, out_min, out_max) => {
         return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
@@ -226,9 +262,16 @@ const Editor = () => {
                         variant="contained"
                         component="label"
                     >
-                        <Typography>Upload File</Typography>
+                        <Typography>
+                            {
+                                waitUploadResponse
+                                    ? <CircularProgress />
+                                    : state.selectedFile ? state.selectedFile.name : "Upload File"
+                            }
+                        </Typography>
                         <input
                             type="file"
+                            onChange={handleChangeFile}
                             hidden
                         />
                     </Button>
@@ -243,10 +286,10 @@ const Editor = () => {
                     >
                         <Typography component="div" className={classes.flexEven}>
                             {
-                                waitExecuteResponse 
-                                    ?  <CircularProgress/> 
-                                    : executeTimer 
-                                        ? <CircularProgressWithLabel value={timerValue} /> 
+                                waitExecuteResponse
+                                    ? <CircularProgress size={10} />
+                                    : executeTimer
+                                        ? <CircularProgressWithLabel size={27} value={timerValue} />
                                         : <SendIcon />
                             }
                         </Typography>
@@ -264,7 +307,7 @@ const Editor = () => {
                     editorProps={{
                         $blockScrolling: true
                     }}
-                    onChange={onChange}
+                    onChange={onChangeCode}
                     value={code}
                     setOptions={{
                         enableBasicAutocompletion: true,
@@ -278,7 +321,7 @@ const Editor = () => {
                     <AceEditor
                         className={classes.aceEditor}
                         mode="text"
-                        style={{color: outputColor}}
+                        style={{ color: outputColor }}
                         theme={theme}
                         name="output"
                         fontSize={fontSize + 2}

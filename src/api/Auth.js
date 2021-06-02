@@ -1,9 +1,8 @@
-import { API_BASE_URL } from '../constants';
 import API from './API'
 
 const signup = (name, email, password) => {
     return API
-        .post(API_BASE_URL + "/authentication/register/", {
+        .post("/authentication/register/", {
             name: name,
             email: email,
             password: password
@@ -12,7 +11,7 @@ const signup = (name, email, password) => {
 
 const login = (email, password) => {
     return API
-        .post(API_BASE_URL + "/authentication/login/", {
+        .post("/authentication/login/", {
             email: email,
             password: password
         });
