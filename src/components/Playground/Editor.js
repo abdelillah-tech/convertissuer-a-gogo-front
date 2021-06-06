@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AceEditor from 'react-ace';
 import PubSub from 'pubsub-js';
@@ -69,6 +69,10 @@ const useStyles = makeStyles((theme) => ({
 
 const Editor = () => {
 
+    const [state, dispatch] = useContext(Context);
+
+    const [currentFile, setCurrentFile] = useState(state.selectedFile);
+
     const themes = [
         'monokai',
         'github',
@@ -81,8 +85,6 @@ const Editor = () => {
         'javascript',
         'python',
     ]
-
-    const [state, dispatch] = useContext(Context);
 
     const startup = new Map();
     startup.set('javascript', 'console.log("Hello World!")')
@@ -134,21 +136,23 @@ const Editor = () => {
     }
 
     const handleChangeFile = (event) => {
-        setWaitUploadResponse(true);
+        setCurrentFile(event.target.value);
         dispatch({
-            type: "CHARGEFILE",
-            payload: event.target.files[0]
+            type: "SELECT",
+            payload: event.target.value
         })
-        console.log(JSON.stringify(event.target.value))
+    }
+
+    const handleUploadFile = (event) => {
+        setWaitUploadResponse(true);
         const data = new FormData()
-        data.append('file', state.selectedFile)
+        data.append('file', event.target.files[0])
         FileUploadService.upload(data, state.token)
             .then((response) => {
-                dispatch({
-                    type: "CHARGESERVERFILE",
-                    payload: response.data.filename
+                PubSub.publish('alert', {
+                    alertType: alertType.success,
+                    message: 'File uploaded!'
                 })
-
                 setWaitUploadResponse(false)
             }).catch(e => {
                 setWaitUploadResponse(false)
@@ -200,9 +204,28 @@ const Editor = () => {
                     })
                 }
             });
-    }
 
-    const classes = useStyles();
+        FileUploadService.getFiles(state.token)
+            .then((response) => {
+                console.log(response.data)
+                dispatch({
+                    type: "FILES",
+                    payload: response.data
+                })
+            }).catch(e => {
+                if (e.response.data.statusCode === 400) {
+                    PubSub.publish('alert', {
+                        alertType: alertType.error,
+                        message: e.response.data.message.join(", ")
+                    })
+                } else {
+                    PubSub.publish('alert', {
+                        alertType: alertType.error,
+                        message: 'Sorry! We cannot load your files for the moment'
+                    })
+                }
+            })
+    }
 
     const startTimer = async (millis) => {
         setExecuteTimer(true)
@@ -216,6 +239,8 @@ const Editor = () => {
     const rangeMap = (num, in_min, in_max, out_min, out_max) => {
         return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
+
+    const classes = useStyles();
 
     return (
         <div className={classes.container}>
@@ -256,6 +281,24 @@ const Editor = () => {
                             ))}
                         </Select>
                     </FormControl>
+
+                    <FormControl className={classes.formControl}>
+                        <InputLabel id="file-label">Files</InputLabel>
+                        <Select
+                            labelId="file-label"
+                            id="file"
+                            value={currentFile}
+                            onChange={handleChangeFile}
+                            input={<Input />}
+                            MenuProps={MenuProps}
+                        >
+                            {state.filesList.map((file) => (
+                                <MenuItem key={file.name} value={file}>
+                                    {file.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </div>
                 <div>
                     <Button
@@ -266,12 +309,12 @@ const Editor = () => {
                             {
                                 waitUploadResponse
                                     ? <CircularProgress />
-                                    : state.selectedFile ? state.selectedFile.name : "Upload File"
+                                    : "Upload File"
                             }
                         </Typography>
                         <input
                             type="file"
-                            onChange={handleChangeFile}
+                            onChange={handleUploadFile}
                             hidden
                         />
                     </Button>

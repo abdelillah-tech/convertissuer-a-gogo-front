@@ -13,15 +13,16 @@ const Reducer = (state, action) => {
                 ...state,
                 isAuthenticated: false,
             };
-        case "CHARGEFILE":
+        case "FILES":
+            return {
+                ...state,
+                filesList: action.payload
+            };
+        case "SELECT":
+            console.log(action.payload)
             return {
                 ...state,
                 selectedFile: action.payload
-            };
-        case "CHARGESERVERFILE":
-            return {
-                ...state,
-                serverFileName: action.payload
             };
         default:
             return state;

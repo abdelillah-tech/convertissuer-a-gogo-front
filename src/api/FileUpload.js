@@ -1,9 +1,8 @@
 import API from './API'
 
-
 const upload = (data, token) => {
     return API
-        .post("/file/",
+        .post("/user/file/",
             data,
             {
                 headers: {
@@ -12,13 +11,14 @@ const upload = (data, token) => {
             });
 }
 
-const read = (fileName, token) => {
+const getFiles = (token) => {
     return API
-        .get(`/file/${fileName}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+        .get("/user/file/",
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
 }
 
-export default { upload, read };
+export default { upload, getFiles };

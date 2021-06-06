@@ -9,6 +9,9 @@ import { Typography } from '@material-ui/core';
 
 import Button from '@material-ui/core/Button';
 
+import DocViewer from "react-doc-viewer";
+
+import GoogleDocsViewer from 'react-google-docs-viewer';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -37,9 +40,15 @@ const FileReader = () => {
 
     const [state, dispatch] = useContext(Context);
 
-    // const file = state.selectedFile ? `${URL.createObjectURL(state.selectedFile)}`.substring(5  ) : "";
-    const file = "C:\\fakepath\\jeeDemo.png"
-    const type = "png";
+    // const docs = [
+    //     { uri: file },
+    // ];
+
+    // const props = {
+    //     allowFullScreen: false,
+    //     src: file
+    // };
+    
 
     const classes = useStyles();
 
@@ -63,11 +72,25 @@ const FileReader = () => {
             </div>
             <div
                 className={classes.fileReader}>
-                <FileViewer
+                {/* <DocViewer documents={docs} /> */}
+                {/* <FileViewer
                     fileType={type}
                     filePath={file}
                     className={classes.fileViewer}>
-                </FileViewer>
+                </FileViewer> */}
+                {/* <GoogleDocsViewer
+                    width="600px"
+                    height="780px"
+                    fileUrl={file}
+                /> */}
+                {/* <img src={file} /> */}
+
+                <iframe
+                    width="99%"
+                    height="99%"
+                    src={state.selectedFile.url}
+                >
+                </iframe>
             </div>
         </div>
     )

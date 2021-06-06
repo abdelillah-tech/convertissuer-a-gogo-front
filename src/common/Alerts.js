@@ -13,7 +13,7 @@ class AlertComp extends React.Component {
         super(props);
         this.state = {
             open: false,
-            alertType: '',
+            alertType: 'error',
             message: '',
         }
     }

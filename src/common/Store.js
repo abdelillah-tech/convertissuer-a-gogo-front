@@ -5,8 +5,8 @@ import Reducer from './Reducer'
 const initialState = {
     isAuthenticated: false,
     token: null,
-    selectedFile: null,
-    serverFileName: null,
+    selectedFile: {id:'', name:'', url:''},
+    filesList: [],
 };
 
 const Store = ({children}) => {
