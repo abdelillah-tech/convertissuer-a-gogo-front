@@ -207,7 +207,6 @@ const Editor = () => {
 
         FileUploadService.getFiles(state.token)
             .then((response) => {
-                console.log(response.data)
                 dispatch({
                     type: "FILES",
                     payload: response.data
@@ -337,7 +336,15 @@ const Editor = () => {
                             }
                         </Typography>
                     </Button>
-                    <span>Execution time: {codeExecTime}ms</span>
+                    <span>
+                        Execution time: 
+                        {
+                                waitExecuteResponse 
+                                    ?  <CircularProgress/> 
+                                    :  `${codeExecTime}ms`
+                        }
+                        
+                    </span>
                 </div>
             </div>
             <div className={classes.editorContainer}>
