@@ -18,6 +18,12 @@ const Reducer = (state, action) => {
                 ...state,
                 filesList: action.payload
             };
+        case "CODES":
+            console.log(action.payload)
+            return {
+                ...state,
+                codesList: action.payload
+            };
         case "SELECT":
             console.log(action.payload)
             return {

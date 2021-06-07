@@ -28,8 +28,9 @@ import { Typography } from '@material-ui/core';
 import { Context } from "../../common/Store";
 import { CircularProgressWithLabel } from "../../common/CircularProgressWithLabel"
 import CircularProgress from '@material-ui/core/CircularProgress';
-
 import { CODE_EXEC_COOLDOWN } from "../../constants"
+import SavedCodeMenu from './SavedCodeMenu';
+import SaveCodeDialog from './SaveCodeDialog';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -150,7 +151,7 @@ const Editor = () => {
         data.append('file', event.target.files[0])
         FileUploadService.upload(data, state.token)
             .then((response) => {
-                pubMessage( undefined , 'File uploaded!', alertType.success)
+                pubMessage(undefined, 'File uploaded!', alertType.success)
                 PubSub.publish('alert', {
                     alertType: alertType.success,
                     message: 'File uploaded!'
@@ -198,6 +199,11 @@ const Editor = () => {
             })
     }
 
+    const sendCodeToEditor = (codeFromMenu) => {
+        console.log(codeFromMenu)
+        setCode(codeFromMenu.code)
+    }
+
     const startTimer = async (millis) => {
         setExecuteTimer(true)
         for (let i = millis / 1000; i > 0; i--) {
@@ -216,7 +222,7 @@ const Editor = () => {
     return (
         <div className={classes.container}>
             <div className={classes.inputs}>
-                <div>
+                <div className={classes.inputs}>
                     <FormControl className={classes.formControl}>
                         <InputLabel id="theme-label">Theme</InputLabel>
                         <Select
@@ -270,19 +276,25 @@ const Editor = () => {
                             ))}
                         </Select>
                     </FormControl>
+
+                    <SavedCodeMenu
+                        className={classes.formControl}
+                        sendCodeToEditor={sendCodeToEditor} />
                 </div>
-                <div>
+                <div className={classes.inputs}>
+                    <SaveCodeDialog code={code}/>
+
                     <Button
                         variant="contained"
                         component="label"
+                        color="primary"
+                        className={classes.formControl}
                     >
-                        <Typography>
-                            {
-                                waitUploadResponse
-                                    ? <CircularProgress />
-                                    : "Upload File"
-                            }
-                        </Typography>
+                        {
+                            waitUploadResponse
+                                ? <CircularProgress />
+                                : "Upload"
+                        }
                         <input
                             type="file"
                             onChange={handleUploadFile}
@@ -309,13 +321,13 @@ const Editor = () => {
                         </Typography>
                     </Button>
                     <span>
-                        Execution time: 
+                        Execution time:
                         {
-                                waitExecuteResponse 
-                                    ?  <CircularProgress/> 
-                                    :  `${codeExecTime}ms`
+                            waitExecuteResponse
+                                ? <CircularProgress />
+                                : `${codeExecTime}ms`
                         }
-                        
+
                     </span>
                 </div>
             </div>

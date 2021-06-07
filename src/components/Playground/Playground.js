@@ -4,6 +4,7 @@ import Editor from './Editor';
 import FileReader from './FileReader';
 import { Context } from "../../common/Store";
 import FileUploadService from '../../api/FileUpload';
+import CodeSaveService from '../../api/CodeSave';
 import alertType from '../../common/AlertTypes';
 import pubMessage from '../../common/MessagePublisher';
 
@@ -44,16 +45,23 @@ const Playground = () => {
     useEffect(() => {
         FileUploadService.getFiles(state.token)
             .then((response) => {
-                console.log(response.data)
                 dispatch({
                     type: "FILES",
                     payload: response.data
                 })
             }).catch(e => {
-                console.log(e.response)
                 pubMessage(e, 'Sorry! We cannot load your files for the moment', alertType.error)
             })
-    },[]);
+        CodeSaveService.getCodes(state.token)
+            .then((response) => {
+                dispatch({
+                    type: "CODES",
+                    payload: response.data
+                })
+            }).catch(e => {
+                pubMessage(e, 'Sorry! We cannot load your codes for the moment', alertType.error)
+            })
+    }, []);
 
     const classes = useStyles();
 

@@ -7,6 +7,7 @@ const initialState = {
     token: null,
     selectedFile: {id:'', name:'', url:''},
     filesList: [],
+    codesList: [],
 };
 
 const Store = ({children}) => {
