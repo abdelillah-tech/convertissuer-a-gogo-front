@@ -144,12 +144,17 @@ const Editor = () => {
         })
     }
 
+    const componentWillMount = () =>{
+        getFiles()
+    }
+
     const handleUploadFile = (event) => {
         setWaitUploadResponse(true);
         const data = new FormData()
         data.append('file', event.target.files[0])
         FileUploadService.upload(data, state.token)
             .then((response) => {
+                getFiles()
                 pubMessage( undefined , 'File uploaded!', alertType.success)
                 PubSub.publish('alert', {
                     alertType: alertType.success,
@@ -186,7 +191,9 @@ const Editor = () => {
                 console.log(e.response)
                 pubMessage(e, 'Sorry! Something went wrong. Please try again!', alertType.error)
             });
+    }
 
+    const getFiles = () => {
         FileUploadService.getFiles(state.token)
             .then((response) => {
                 dispatch({
