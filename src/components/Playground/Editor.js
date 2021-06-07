@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import AceEditor from 'react-ace';
 import PubSub from 'pubsub-js';
 import alertType from '../../common/AlertTypes';
+import pubMessage from '../../common/MessagePublisher';
 
 import 'brace/mode/javascript';
 import 'brace/mode/python';
@@ -149,6 +150,7 @@ const Editor = () => {
         data.append('file', event.target.files[0])
         FileUploadService.upload(data, state.token)
             .then((response) => {
+                pubMessage( undefined , 'File uploaded!', alertType.success)
                 PubSub.publish('alert', {
                     alertType: alertType.success,
                     message: 'File uploaded!'
@@ -156,17 +158,7 @@ const Editor = () => {
                 setWaitUploadResponse(false)
             }).catch(e => {
                 setWaitUploadResponse(false)
-                if (e.response.data.statusCode === 400) {
-                    PubSub.publish('alert', {
-                        alertType: alertType.error,
-                        message: e.response.data.message.join(", ")
-                    })
-                } else {
-                    PubSub.publish('alert', {
-                        alertType: alertType.error,
-                        message: 'Sorry! We cannot upload your file. Please try again!'
-                    })
-                }
+                pubMessage(e, 'Sorry! We cannot upload your file. Please try again!')
             })
     }
 
@@ -175,7 +167,6 @@ const Editor = () => {
         ExecuteService.execute(language, code, state.token)
             .then((response) => {
                 if (!response.data.result.result.stderr) {
-
                     setResults(response.data.result.result.stdout)
                     setCodeExecTime(response.data.result.result.executionTime)
                     setOutputColor("white")
@@ -192,17 +183,8 @@ const Editor = () => {
             }).catch(e => {
                 setWaitExecuteResponse(false)
                 startTimer(CODE_EXEC_COOLDOWN)
-                if (e.response.data.statusCode === 400) {
-                    PubSub.publish('alert', {
-                        alertType: alertType.error,
-                        message: e.response.data.message.join(", ")
-                    })
-                } else {
-                    PubSub.publish('alert', {
-                        alertType: alertType.error,
-                        message: 'Sorry! Something went wrong. Please try again!'
-                    })
-                }
+                console.log(e.response)
+                pubMessage(e, 'Sorry! Something went wrong. Please try again!', alertType.error)
             });
 
         FileUploadService.getFiles(state.token)
@@ -212,17 +194,7 @@ const Editor = () => {
                     payload: response.data
                 })
             }).catch(e => {
-                if (e.response.data.statusCode === 400) {
-                    PubSub.publish('alert', {
-                        alertType: alertType.error,
-                        message: e.response.data.message.join(", ")
-                    })
-                } else {
-                    PubSub.publish('alert', {
-                        alertType: alertType.error,
-                        message: 'Sorry! We cannot load your files for the moment'
-                    })
-                }
+                pubMessage(e, 'Sorry! We cannot load your files for the moment', alertType.error)
             })
     }
 

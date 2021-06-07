@@ -10,7 +10,6 @@ import Link from '@material-ui/core/Link';
 import AuthService from '../../api/Auth';
 import { useHistory } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
-import PubSub from 'pubsub-js';
 import alertType from '../../common/AlertTypes';
 import { useForm, Controller } from 'react-hook-form';
 import { Context } from "../../common/Store";
@@ -21,6 +20,7 @@ import {
     PASSWORD_MIN_LENGTH,
     PASSWORD_MAX_LENGTH
 } from '../../constants';
+import pubMessage from '../../common/MessagePublisher';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -67,17 +67,7 @@ const Login = () => {
                 })
                 history.push("/playground");
             }).catch(e => {
-                if (e.response && e.response.data && e.response.data.statusCode === 403) {
-                    PubSub.publish('alert', {
-                        alertType: alertType.error,
-                        message: e.response.data.message
-                    })
-                } else {
-                    PubSub.publish('alert', {
-                        alertType: alertType.error,
-                        message: 'Sorry! Something went wrong. Please try again!'
-                    })
-                }
+                pubMessage(e, 'Sorry! Something went wrong. Please try again!', alertType.error)
                 reset(
                     {
                         email: '',

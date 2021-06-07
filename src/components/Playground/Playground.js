@@ -1,21 +1,11 @@
 import React, { useContext, useEffect } from 'react';
-
-import PubSub from 'pubsub-js';
-
 import { makeStyles } from '@material-ui/core/styles';
-
 import Editor from './Editor';
-
 import FileReader from './FileReader';
-
 import { Context } from "../../common/Store";
-
 import FileUploadService from '../../api/FileUpload';
-
 import alertType from '../../common/AlertTypes';
-
-
-
+import pubMessage from '../../common/MessagePublisher';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -60,17 +50,8 @@ const Playground = () => {
                     payload: response.data
                 })
             }).catch(e => {
-                if (e.response.data.statusCode === 400) {
-                    PubSub.publish('alert', {
-                        alertType: alertType.error,
-                        message: e.response.data.message.join(", ")
-                    })
-                } else {
-                    PubSub.publish('alert', {
-                        alertType: alertType.error,
-                        message: 'Sorry! We cannot load your files for the moment'
-                    })
-                }
+                console.log(e.response)
+                pubMessage(e, 'Sorry! We cannot load your files for the moment', alertType.error)
             })
     },[]);
 

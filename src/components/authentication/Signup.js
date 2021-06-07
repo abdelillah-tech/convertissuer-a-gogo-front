@@ -58,7 +58,7 @@ const Signup = () => {
 
     const onSubmit = data => {
         AuthService.signup(data.name, data.email, data.password)
-            .then((response) => {
+            .then(() => {
                 history.push("/login");
             }).catch(e => {
                 if (e.response.data.statusCode === 403) {
