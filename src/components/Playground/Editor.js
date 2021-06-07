@@ -24,6 +24,8 @@ import Button from '@material-ui/core/Button';
 import ExecuteService from '../../api/Executor';
 import FileUploadService from '../../api/FileUpload';
 import SendIcon from '@material-ui/icons/Send';
+import ClearIcon from '@material-ui/icons/Clear';
+import IconButton from '@material-ui/core/IconButton';
 import { Typography } from '@material-ui/core';
 import { Context } from "../../common/Store";
 import { CircularProgressWithLabel } from "../../common/CircularProgressWithLabel"
@@ -67,6 +69,37 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: "space-between",
         alignItems: "center",
     },
+
+    flexFile: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+
+    flexFileBtn: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+
+    menu: {
+        display: "flex"
+    },
+
+    menuItem: {
+        justifyContent: "space-between",
+    },
+    iconButton: {
+        color: "red"
+    },
+    menuItemClick: {
+        minHeight: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+    }
 }));
 
 const Editor = () => {
@@ -225,6 +258,15 @@ const Editor = () => {
         return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 
+    const handleDeleteFile = (file) => {
+        FileUploadService.deleteFile(file.key, state.token)
+            .then((response) => {
+                console.log(response);
+            }).catch(e => {
+                pubMessage(e, 'Error in delete file', alertType.error)
+            })
+    }
+
     const classes = useStyles();
 
     return (
@@ -276,14 +318,28 @@ const Editor = () => {
                             onChange={handleChangeFile}
                             input={<Input />}
                             MenuProps={MenuProps}
+                            className={classes.menu}
                         >
                             {state.filesList.map((file) => (
-                                <MenuItem key={file.name} value={file}>
+                                <MenuItem key={file.name} value={file} className={classes.menuItem, classes.flexBetween}>
                                     {file.name}
                                 </MenuItem>
                             ))}
                         </Select>
                     </FormControl>
+                    {
+                    currentFile.id
+                        ? 
+                        <div className={classes.flexEven}>
+                            <Button 
+                                aria-label="delete" 
+                                className={classes.iconButton}
+                                onClick={() => handleDeleteFile(currentFile)}>
+                                Delete file
+                            </Button>   
+                        </div>
+                        : ""
+                    }
 
                     <SavedCodeMenu
                         className={classes.formControl}

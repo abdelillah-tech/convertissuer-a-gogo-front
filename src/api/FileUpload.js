@@ -13,7 +13,7 @@ const upload = (data, token) => {
 
 const getFiles = (token) => {
     return API
-        .get("/user/file/",
+        .get("/user/file",
             {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -21,4 +21,14 @@ const getFiles = (token) => {
             });
 }
 
-export default { upload, getFiles };
+const deleteFile = (key, token) => {
+    return API
+        .delete("/user/file/" + key,
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+}
+
+export default { upload, getFiles, deleteFile };

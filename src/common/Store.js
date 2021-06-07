@@ -5,7 +5,7 @@ import Reducer from './Reducer'
 const initialState = {
     isAuthenticated: false,
     token: null,
-    selectedFile: {id:'', name:'', url:''},
+    selectedFile: {id: null, name: '', url: ''},
     filesList: [],
     codesList: [],
 };
