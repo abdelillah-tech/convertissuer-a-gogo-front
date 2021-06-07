@@ -21,4 +21,14 @@ const getCodes = (token) => {
             });
 }
 
-export default { save, getCodes };
+const deleteCode = (uid, token) => {
+    return API
+        .delete(`/user/code/${uid}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+}
+
+export default { save, getCodes, deleteCode };

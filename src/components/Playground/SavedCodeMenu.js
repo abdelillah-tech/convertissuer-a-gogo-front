@@ -4,8 +4,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import { Context } from "../../common/Store";
 import { makeStyles } from '@material-ui/core/styles';
-
-
+import ClearIcon from '@material-ui/icons/Clear';
+import IconButton from '@material-ui/core/IconButton';
+import pubMessage from '../../common/MessagePublisher';
+import CodeSaveService from '../../api/CodeSave';
+import alertType from '../../common/AlertTypes';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -15,9 +18,13 @@ const useStyles = makeStyles((theme) => ({
     },
     formControl: {
         margin: theme.spacing(1),
-        minWidth: 120,
-        maxWidth: 300,
     },
+    menuItem: {
+        justifyContent: "space-between",
+    },
+    iconButton: {
+        color: "red"
+    }
 }));
 
 
@@ -40,6 +47,22 @@ export default function SavedCodeMenu({ sendCodeToEditor }) {
         sendCodeToEditor(code);
         setAnchorEl(null);
     };
+
+    const handleDelete = (id) => {
+        CodeSaveService.deleteCode(id, state.token)
+            .then((response) => {
+                console.log(response.data.name)
+                dispatch({
+                    type: "CODES",
+                    payload: state.codesList.filter(code => code.id !== id)
+                })
+                pubMessage(undefined, `Code ${response.data.name} delted successfuly`, alertType.success)
+            }).catch(e => {
+                pubMessage(undefined, 'Sorry! We cannot delete this code for the moment', alertType.error)
+            })
+
+        
+    }
 
     const classes = useStyles();
 
@@ -66,8 +89,15 @@ export default function SavedCodeMenu({ sendCodeToEditor }) {
                 {state.codesList.map((code) => (
                     <MenuItem
                         key={code.name}
+                        className={classes.menuItem}
                         onClick={() => handleSelect(code)}>
                         {code.name}
+                        <IconButton 
+                            aria-label="delete" 
+                            className={classes.iconButton}
+                            onClick={() => handleDelete(code.id)}>
+                            <ClearIcon fontSize="small" />
+                        </IconButton>
                     </MenuItem>
                 ))}
             </Menu>
