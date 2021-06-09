@@ -121,9 +121,16 @@ const Editor = () => {
         'python',
     ]
 
-    const startup = new Map();
-    startup.set('javascript', 'console.log("Hello World!")')
-    startup.set('python', 'print("Hello World!")')
+const startup = new Map();
+startup.set('javascript', 
+'const run = (hex_buffer) => {\n\
+    console.log(hex_buffer);\n\
+    return hex_buffer\n\
+}')
+startup.set('python', 
+'def run(hex_data):\n\
+    print(hex_data)\n\
+    return hex_data')
 
     const [theme, setTheme] = useState(themes[0]);
 
@@ -204,7 +211,7 @@ const Editor = () => {
 
     const handleExecute = () => {
         setWaitExecuteResponse(true)
-        ExecuteService.execute(language, code, state.token)
+        ExecuteService.execute(language, code, currentFile, state.token)
             .then((response) => {
                 if (!response.data.result.result.stderr) {
                     setResults(response.data.result.result.stdout)
@@ -371,7 +378,7 @@ const Editor = () => {
                         size="large"
                         color="primary"
                         className={classes.formControl}
-                        disabled={waitExecuteResponse || executeTimer}
+                        disabled={waitExecuteResponse || executeTimer || !currentFile.id}
                         onClick={handleExecute}
                     >
                         <Typography component="div" className={classes.flexEven}>
