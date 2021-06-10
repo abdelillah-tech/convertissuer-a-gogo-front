@@ -8,6 +8,7 @@ const initialState = {
     selectedFile: {id: null, name: '', url: ''},
     filesList: [],
     codesList: [],
+    resultFileUrl: null
 };
 
 const Store = ({children}) => {

@@ -22,6 +22,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import ExecuteService from '../../api/Executor';
+import PrivateFileService from '../../api/PrivateFile';
 import FileUploadService from '../../api/FileUpload';
 import SendIcon from '@material-ui/icons/Send';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -213,10 +214,19 @@ startup.set('python',
         setWaitExecuteResponse(true)
         ExecuteService.execute(language, code, currentFile, state.token)
             .then((response) => {
+                console.log(response.data.result.result);
                 if (!response.data.result.result.stderr) {
                     setResults(response.data.result.result.stdout)
                     setCodeExecTime(response.data.result.result.executionTime)
                     setOutputColor("white")
+                    if(response.data.result.result.resultKey){
+                        PrivateFileService.urlFromKey(response.data.result.result.resultKey, state.token).then((response) => {
+                            dispatch({
+                                type: "RESULT_FILE",
+                                payload: response.data
+                            })
+                        })
+                    }
                 } else {
                     setResults(`${response.data.result.result.stdout ? response.data.result.result.stdout : ''}\n\n${response.data.result.result.stderr}`);
                     setCodeExecTime(response.data.result.result.executionTime)
@@ -230,7 +240,7 @@ startup.set('python',
             }).catch(e => {
                 setWaitExecuteResponse(false)
                 startTimer(CODE_EXEC_COOLDOWN)
-                console.log(e.response)
+                console.log(e)
                 pubMessage(e, 'Sorry! Something went wrong. Please try again!', alertType.error)
             });
     }

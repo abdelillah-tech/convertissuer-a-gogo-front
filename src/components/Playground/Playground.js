@@ -13,7 +13,6 @@ const useStyles = makeStyles((theme) => ({
         border: "5px solid green",
     },
     testContainer: {
-        width: "100vw",
         display: "flex",
         flexDirection: "column",
         justifyContent: 'center',
@@ -21,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
     },
     editor: {
         border: "2px solid #ff8C00",
-        width: "100vw",
         display: "flex",
         flexWrap: "wrap",
         justifyContent: 'center',

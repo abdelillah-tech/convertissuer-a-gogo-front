@@ -10,6 +10,10 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
     },
+    flexHorizontal: {
+        display: 'flex',
+        flexDirection: 'row',
+    },
     fileReader: {
         width: "500px",
         height: "600px",
@@ -19,8 +23,7 @@ const useStyles = makeStyles((theme) => ({
     },
     inputs: {
         display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: "center",
+        justifyContent: 'space-evenly',
     },
     button: {
         margin: theme.spacing(2),
@@ -51,14 +54,26 @@ const FileReader = () => {
                     <Typography>edited file</Typography>
                 </Button>
             </div>
-            <div
-                className={classes.fileReader}>
-                <iframe
-                    width="99%"
-                    height="99%"
-                    src={state.selectedFile.url}
-                >
-                </iframe>
+            <div className={classes.flexHorizontal}>
+                <div
+                    className={classes.fileReader}>
+                    <iframe
+                        width="99%"
+                        height="99%"
+                        src={state.selectedFile.url}
+                        >
+                    </iframe>
+                </div>
+
+                <div
+                    className={classes.fileReader}>
+                    <iframe
+                        width="99%"
+                        height="99%"
+                        src={state.resultFileUrl}
+                        >
+                    </iframe>
+                </div>
             </div>
         </div>
     )

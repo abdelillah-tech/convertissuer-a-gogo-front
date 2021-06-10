@@ -19,16 +19,19 @@ const Reducer = (state, action) => {
                 filesList: action.payload
             };
         case "CODES":
-            console.log(action.payload)
             return {
                 ...state,
                 codesList: action.payload
             };
         case "SELECT":
-            console.log(action.payload)
             return {
                 ...state,
                 selectedFile: action.payload
+            };
+        case "RESULT_FILE":
+            return {
+                ...state,
+                resultFileUrl: action.payload.url
             };
         default:
             return state;
