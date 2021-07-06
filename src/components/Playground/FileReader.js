@@ -39,20 +39,13 @@ const FileReader = () => {
     return (
         <div className={classes.container}>
             <div className={classes.inputs}>
-                <Button
-                    variant="contained"
-                    component="label"
-                    className={classes.button}
-                >
+                <h3>
                     <Typography>original file</Typography>
-                </Button>
-
-                <Button
-                    variant="contained"
-                    className={classes.button}
-                >
+                </h3>
+                <p>
                     <Typography>edited file</Typography>
-                </Button>
+                </p>
+
             </div>
             <div className={classes.flexHorizontal}>
                 <div
