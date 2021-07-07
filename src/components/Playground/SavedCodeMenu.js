@@ -56,7 +56,7 @@ export default function SavedCodeMenu({ sendCodeToEditor }) {
                     type: "CODES",
                     payload: state.codesList.filter(code => code.id !== id)
                 })
-                pubMessage(undefined, `Code ${response.data.name} delted successfuly`, alertType.success)
+                pubMessage(undefined, `Code deleted successfuly`, alertType.success)
             }).catch(e => {
                 pubMessage(undefined, 'Sorry! We cannot delete this code for the moment', alertType.error)
             })

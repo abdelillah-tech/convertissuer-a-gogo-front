@@ -321,22 +321,6 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
             })
     }
 
-    const handleDeleteCode = (id) => {
-        CodeSaveService.deleteCode(id, state.token)
-            .then((response) => {
-                console.log(response.data.name)
-                dispatch({
-                    type: "CODES",
-                    payload: state.codesList.filter(code => code.id !== id)
-                })
-                pubMessage(undefined, `Code ${response.data.name} delted successfuly`, alertType.success)
-            }).catch(e => {
-                pubMessage(undefined, 'Sorry! We cannot delete this code for the moment', alertType.error)
-            })
-
-        
-    }
-
     const classes = useStyles();
 
     return (
