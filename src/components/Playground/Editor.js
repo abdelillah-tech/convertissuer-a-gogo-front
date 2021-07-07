@@ -34,30 +34,26 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { CODE_EXEC_COOLDOWN } from "../../constants"
 import SavedCodeMenu from './SavedCodeMenu';
 import SaveCodeDialog from './SaveCodeDialog';
+import CodeSaveService from '../../api/CodeSave';
+import { BorderVerticalRounded } from '@material-ui/icons';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
 
 const useStyles = makeStyles((theme) => ({
     container: {
-        position: 'relative',
         display: 'flex',
         flexDirection: 'column',
     },
     editorContainer: {
-        position: 'relative',
         display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: "center",
     },
     inputs: {
         display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: "center",
-    },
-    aceEditor: {
-        margin: theme.spacing(1),
-        maxWidth: '100vw',
-        border: "2px solid #ff8C00",
-        borderRadius: '2px',
+        justifyContent: "space-evenly",
+        alignItems: "center",
     },
     formControl: {
         margin: theme.spacing(1),
@@ -100,6 +96,33 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+    },
+    greyout: {
+        color: "#BBBBBB"
+    },
+    editorTitle: {
+        color: "white",
+        backgroundColor: "#2f3129",
+        borderTopRightRadius: "10px",
+        borderTopLeftRadius: "10px",
+        padding: "8px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        whiteSpace: "nowrap",
+        height: "40px"
+    },
+    editorItemContainer: {
+        margin: "5px",
+        display: "flex",
+        flexDirection: "column",
+        
+    },
+    aceEditor: {       
+        borderTop: "2px solid #ff8C00",
+        display: "flex",
+        borderBottomRightRadius: "10px",
+        borderBottomLeftRadius: "10px",
     }
 }));
 
@@ -123,21 +146,14 @@ const Editor = () => {
     ]
 
 const startup = new Map();
-startup.set('javascript', 
-'const run = (hex_buffer) => {\n\
-    console.log(hex_buffer);\n\
-    return hex_buffer\n\
-}')
-startup.set('python', 
-'def run(hex_data):\n\
-    print(hex_data)\n\
-    return hex_data')
+startup.set('javascript', {code: 'const run = async (hex_buffer) => {\n\tconsole.log(hex_buffer);\n\treturn hex_buffer\n}'})
+startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn hex_data'})
 
     const [theme, setTheme] = useState(themes[0]);
 
     const [language, setLanguage] = useState(localStorage.getItem("language") || languages[1]);
 
-    const [fontSize, setFontSize] = useState(17);
+    const [fontSize, setFontSize] = useState(16);
 
     const [results, setResults] = useState(null);
 
@@ -148,6 +164,8 @@ startup.set('python',
     const [timerValue, setTimerValue] = useState(0);
 
     const [waitUploadResponse, setWaitUploadResponse] = useState(false);
+    
+    const [hideDebug, setHideDebug] = useState(false);
 
     const [outputColor, setOutputColor] = useState('white')
 
@@ -165,7 +183,9 @@ startup.set('python',
     };
 
     const onChangeCode = (value) => {
-        setCode(value)
+        let currentCode = code
+        code.code = value
+        setCode(code)
     }
 
     const handleChangeTheme = (event) => {
@@ -212,9 +232,8 @@ startup.set('python',
 
     const handleExecute = () => {
         setWaitExecuteResponse(true)
-        ExecuteService.execute(language, code, currentFile, state.token)
+        ExecuteService.execute(language, code.code, currentFile, state.token)
             .then((response) => {
-                console.log(response.data.result.result);
                 if (!response.data.result.result.stderr) {
                     setResults(response.data.result.result.stdout)
                     setCodeExecTime(response.data.result.result.executionTime)
@@ -240,7 +259,6 @@ startup.set('python',
             }).catch(e => {
                 setWaitExecuteResponse(false)
                 startTimer(CODE_EXEC_COOLDOWN)
-                console.log(e)
                 pubMessage(e, 'Sorry! Something went wrong. Please try again!', alertType.error)
             });
     }
@@ -258,8 +276,13 @@ startup.set('python',
     }
 
     const sendCodeToEditor = (codeFromMenu) => {
-        console.log(codeFromMenu)
-        setCode(codeFromMenu.code)
+        console.log(codeFromMenu);
+        if(!codeFromMenu.name){
+            setCode(startup.get(language))
+
+        } else {
+            setCode(codeFromMenu)
+        }
     }
 
     const startTimer = async (millis) => {
@@ -282,6 +305,22 @@ startup.set('python',
             }).catch(e => {
                 pubMessage(e, 'Error in delete file', alertType.error)
             })
+    }
+
+    const handleDeleteCode = (id) => {
+        CodeSaveService.deleteCode(id, state.token)
+            .then((response) => {
+                console.log(response.data.name)
+                dispatch({
+                    type: "CODES",
+                    payload: state.codesList.filter(code => code.id !== id)
+                })
+                pubMessage(undefined, `Code ${response.data.name} delted successfuly`, alertType.success)
+            }).catch(e => {
+                pubMessage(undefined, 'Sorry! We cannot delete this code for the moment', alertType.error)
+            })
+
+        
     }
 
     const classes = useStyles();
@@ -344,6 +383,7 @@ startup.set('python',
                             ))}
                         </Select>
                     </FormControl>
+
                     {
                     currentFile.id
                         ? 
@@ -358,12 +398,8 @@ startup.set('python',
                         : ""
                     }
 
-                    <SavedCodeMenu
-                        className={classes.formControl}
-                        sendCodeToEditor={sendCodeToEditor} />
                 </div>
                 <div className={classes.inputs}>
-                    <SaveCodeDialog code={code}/>
 
                     <Button
                         variant="contained"
@@ -402,7 +438,7 @@ startup.set('python',
                         </Typography>
                     </Button>
                     <span>
-                        Execution time:
+                        Execution time:&nbsp;
                         {
                             waitExecuteResponse
                                 ? <CircularProgress />
@@ -413,40 +449,74 @@ startup.set('python',
                 </div>
             </div>
             <div className={classes.editorContainer}>
-                <AceEditor
-                    className={classes.aceEditor}
-                    mode={language}
-                    theme={theme}
-                    name="editor"
-                    fontSize={fontSize}
-                    editorProps={{
-                        $blockScrolling: true
-                    }}
-                    onChange={onChangeCode}
-                    value={code}
-                    setOptions={{
-                        enableBasicAutocompletion: true,
-                        enableLiveAutocompletion: true,
-                        enableSnippets: false,
-                        showLineNumbers: true,
-                        tabSize: 2,
-                    }}
-                />
-                <div>
+                <div className={classes.editorItemContainer} style={{ flex: hideDebug ? "6" : "1"}}>
+                    <div className={classes.editorTitle}>
+
+                        <span className={classes.inputs}>
+                            <SavedCodeMenu
+                                className={classes.formControl}
+                                sendCodeToEditor={sendCodeToEditor} />
+                            {code.name ? `"${code.name}"` : "Default"}
+                        </span>
+                        
+                        <SaveCodeDialog code={code}/>
+                    </div>
+
                     <AceEditor
                         className={classes.aceEditor}
-                        mode="text"
-                        style={{ color: outputColor }}
+                        mode={language}
                         theme={theme}
-                        name="output"
-                        fontSize={fontSize + 2}
-                        showPrintMargin={false}
-                        showGutter={false}
-                        highlightActiveLine={false}
-                        value={results}
-                        readOnly={true}
-                        editorProps={{ $blockScrolling: true }}
+                        name="editor"
+                        fontSize={fontSize}
+                        editorProps={{
+                            $blockScrolling: true
+                        }}
+                        onChange={onChangeCode}
+                        value={code.code}
+                        setOptions={{
+                            enableBasicAutocompletion: true,
+                            enableLiveAutocompletion: true,
+                            enableSnippets: true,
+                            showLineNumbers: true,
+                            tabSize: 2,
+                        }}
+                        width={"100%"}
+
                     />
+                </div>
+                <div className={classes.editorItemContainer} style={{ flex: "1"}}>
+                    <div className={classes.editorTitle}>
+                        <span>
+                            Debug output
+                        </span>
+                        { 
+                        hideDebug 
+                            ? <IconButton color="primary" onClick={() => setHideDebug(false)}><ArrowRightIcon></ArrowRightIcon></IconButton>
+                            : <IconButton color="primary" onClick={() => setHideDebug(true)}><ArrowLeftIcon></ArrowLeftIcon></IconButton> 
+                        }
+                    </div>
+
+                        <AceEditor
+                            className={classes.aceEditor}
+                            mode="text"
+                            style={{ 
+                                color: outputColor
+                            }}
+                            width={"100%"}
+                            height={"100%"}
+                            theme={theme}
+                            name="output"
+                            fontSize={fontSize + 2}
+                            showPrintMargin={false}
+                            showGutter={false}
+                            highlightActiveLine={false}
+                            value={results}
+                            readOnly={true}
+                            editorProps={{ $blockScrolling: true }}
+                            
+                        />
+                        
+
                 </div>
             </div>
         </div>

@@ -10,23 +10,17 @@ import pubMessage from '../../common/MessagePublisher';
 
 const useStyles = makeStyles((theme) => ({
     container: {
-        border: "5px solid green",
+        
     },
     testContainer: {
         display: "flex",
         flexDirection: "column",
-        justifyContent: 'center',
-        alignItems: 'center',
     },
     editor: {
         border: "2px solid #ff8C00",
         display: "flex",
-        flexWrap: "wrap",
-        justifyContent: 'center',
-        alignItems: 'center',
     },
     reader: {
-        maxWidth: "100%",
     },
     paper: {
         minWidth: "50%",

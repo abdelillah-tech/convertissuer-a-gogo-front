@@ -9,6 +9,8 @@ import IconButton from '@material-ui/core/IconButton';
 import pubMessage from '../../common/MessagePublisher';
 import CodeSaveService from '../../api/CodeSave';
 import alertType from '../../common/AlertTypes';
+import ListIcon from '@material-ui/icons/List';
+
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -43,7 +45,6 @@ export default function SavedCodeMenu({ sendCodeToEditor }) {
     };
 
     const handleSelect = (code) => {
-        console.log(code);
         sendCodeToEditor(code);
         setAnchorEl(null);
     };
@@ -76,7 +77,8 @@ export default function SavedCodeMenu({ sendCodeToEditor }) {
                 className={classes.formControl}
                 onClick={handleClick}
                 color="primary">
-                saved code
+                <ListIcon></ListIcon>
+                code
             </Button>
             <Menu
                 id="simple-menu"
@@ -85,7 +87,8 @@ export default function SavedCodeMenu({ sendCodeToEditor }) {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                <MenuItem onClick={handleClose}>none</MenuItem>
+                <MenuItem onClick={() => handleSelect({})}>default</MenuItem>
+
                 {state.codesList.map((code) => (
                     <MenuItem
                         key={code.name}

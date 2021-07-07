@@ -3,23 +3,29 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Context } from "../../common/Store";
 import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
+import IconButton from '@material-ui/core/IconButton';
+import { responsiveFontSizes } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     container: {
-        position: 'relative',
         display: 'flex',
         flexDirection: 'column',
+        margin: '5px'
     },
     flexHorizontal: {
+        minWidth: "100%",
         display: 'flex',
         flexDirection: 'row',
     },
     fileReader: {
-        width: "500px",
-        height: "600px",
-        maxWidth: '100vw',
+        margin: theme.spacing(1),
+        width: "100%",
+        height: "auto",
         border: "2px solid #ff8C00",
         borderRadius: '2px',
+        backgroundColor: "#2f3129",
+        color: "white",
     },
     inputs: {
         display: 'flex',
@@ -28,6 +34,26 @@ const useStyles = makeStyles((theme) => ({
     button: {
         margin: theme.spacing(2),
     },
+    readerTitle: {
+        display: "flex",
+        justifyContent: "center",
+        fontSize: "24px",
+        maxHeight: "50px"
+    },
+    flexH: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: "center"
+    },
+    iframeContainer: {
+        flex: "0",
+        display: 'flex',
+        height: "200px"
+    },
+    iframe: {
+        backgroundColor: "white",
+        margin: "5px",
+    }
 }));
 
 const FileReader = () => {
@@ -36,36 +62,49 @@ const FileReader = () => {
 
     const classes = useStyles();
 
+    const downloadFile = () => {
+        console.log("todo: download file")
+    }
+
     return (
         <div className={classes.container}>
-            <div className={classes.inputs}>
-                <h3>
-                    <Typography>original file</Typography>
-                </h3>
-                <p>
-                    <Typography>edited file</Typography>
-                </p>
-
-            </div>
             <div className={classes.flexHorizontal}>
                 <div
                     className={classes.fileReader}>
-                    <iframe
-                        width="99%"
-                        height="99%"
-                        src={state.selectedFile.url}
-                        >
-                    </iframe>
+                    <div className={classes.readerTitle}>
+                        <h3 className={classes.flexH}>
+                            <Typography>Original file</Typography>
+                        </h3>
+                    </div>
+                    <div className={classes.iframeContainer}>
+                        <iframe
+                            style={{flex: 1}}
+                            className={classes.iframe}
+                            src={state.selectedFile.url}
+                            >
+                        </iframe>
+                    </div>
                 </div>
 
                 <div
                     className={classes.fileReader}>
-                    <iframe
-                        width="99%"
-                        height="99%"
-                        src={state.resultFileUrl}
-                        >
-                    </iframe>
+                    <div
+                        className={classes.readerTitle}>
+                        <h3 className={classes.flexH}>
+                            <Typography>Edited file</Typography>
+                            <IconButton onClick={downloadFile}>
+                                <CloudDownloadIcon style={{ color: "white" }}></CloudDownloadIcon>
+                            </IconButton>
+                        </h3>
+                    </div>
+                    <div className={classes.iframeContainer}>
+                        <iframe
+                            style={{flex: 1}}
+                            className={classes.iframe}
+                            src={state.resultFileUrl}
+                            >
+                        </iframe>
+                    </div>
                 </div>
             </div>
         </div>

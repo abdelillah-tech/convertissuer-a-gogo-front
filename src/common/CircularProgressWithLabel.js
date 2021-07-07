@@ -21,7 +21,7 @@ export function CircularProgressWithLabel(props){
         text-transform="lowercase"
       >
         <Typography component="span" color="textSecondary">
-            {`${Math.round(props.value/100*CODE_EXEC_COOLDOWN/1000)}s`}
+            {`${Math.round(props.value/100*CODE_EXEC_COOLDOWN/1000)}`}
         </Typography>
       </Box>
     </Box>

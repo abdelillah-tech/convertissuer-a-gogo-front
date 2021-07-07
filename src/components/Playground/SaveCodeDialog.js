@@ -38,7 +38,12 @@ const SaveCodeDialog = (code) => {
     const [name, setName] = useState("")
 
     const handleClickOpen = () => {
-        setOpen(true);
+        console.log(code);
+        if(code.code.name){
+            handleUpdate()
+        } else {
+            setOpen(true);
+        }
     };
 
     const handleClose = () => {
@@ -48,11 +53,33 @@ const SaveCodeDialog = (code) => {
     const handleSave = () => {
         let data = {
             code: code.code,
-            name: name,
+            name: code.name,
         }
         CodeSaveService.save(data, state.token)
             .then((response) => {
-                pubMessage(undefined, 'Your code is saved', alertType.success)
+                pubMessage(undefined, 'Your code is now saved', alertType.success)
+            }).catch(e => {
+                pubMessage(e, 'Sorry! We cannot load your codes for the moment', alertType.error)
+            })
+        CodeSaveService.getCodes(state.token)
+            .then((response) => {
+                dispatch({
+                    type: "CODES",
+                    payload: response.data
+                })
+            }).catch(e => {
+                console.log(e.response)
+                pubMessage(e, 'Sorry! We cannot load your codes for the moment', alertType.error)
+                setOpen(false);
+            })
+        setOpen(false);
+    }
+    
+    const handleUpdate = () => {
+        let data = code.code
+        CodeSaveService.update(data, state.token)
+            .then((response) => {
+                pubMessage(undefined, 'Your code is now updated', alertType.success)
             }).catch(e => {
                 console.log(e.response)
                 pubMessage(e, 'Sorry! We cannot load your codes for the moment', alertType.error)
@@ -82,11 +109,10 @@ const SaveCodeDialog = (code) => {
         <div className={classes.container}>
             <Button
                 variant="contained"
-                color="primary"
                 className={classes.FormControl}
                 onClick={handleClickOpen}>
                 <Typography>
-                    Save
+                    {code.code.name ? "update" : "Save" }
                 </Typography>
             </Button>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">

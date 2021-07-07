@@ -11,6 +11,18 @@ const save = (data, token) => {
             });
 }
 
+const update = (data, token) => {
+    console.log(data);
+    return API
+        .put("/user/code/",
+            data,
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+}
+
 const getCodes = (token) => {
     return API
         .get("/user/code/",
@@ -31,4 +43,4 @@ const deleteCode = (uid, token) => {
             });
 }
 
-export default { save, getCodes, deleteCode };
+export default { save, update, getCodes, deleteCode };
