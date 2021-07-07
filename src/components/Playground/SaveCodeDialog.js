@@ -39,8 +39,7 @@ const SaveCodeDialog = (code) => {
     const [name, setName] = useState("")
 
     const handleClickOpen = () => {
-        console.log(code);
-        if(code.name){
+        if(code.code.name){
             handleUpdate()
         } else {
             setOpen(true);
@@ -53,7 +52,7 @@ const SaveCodeDialog = (code) => {
 
     const handleSave = () => {
         let data = {
-            code: code.code,
+            code: code.code.code,
             name: name,
         }
         CodeSaveService.save(data, state.token)
@@ -66,7 +65,6 @@ const SaveCodeDialog = (code) => {
                             payload: response.data
                         })
                     }).catch(e => {
-                        console.log(e.response)
                         pubMessage(e, 'Sorry! We cannot load your codes for the moment', alertType.error)
                         setOpen(false);
                     })
@@ -83,18 +81,15 @@ const SaveCodeDialog = (code) => {
             .then((response) => {
                 pubMessage(undefined, 'Your code is now updated', alertType.success)
             }).catch(e => {
-                console.log(e.response)
                 pubMessage(e, 'Sorry! We cannot load your codes for the moment', alertType.error)
             })
         CodeSaveService.getCodes(state.token)
             .then((response) => {
-                console.log(response.data)
                 dispatch({
                     type: "CODES",
                     payload: response.data
                 })
             }).catch(e => {
-                console.log(e.response)
                 pubMessage(e, 'Sorry! We cannot load your codes for the moment', alertType.error)
                 setOpen(false);
             })

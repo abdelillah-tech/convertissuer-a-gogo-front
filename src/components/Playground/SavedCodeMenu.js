@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: "center",
     },
     formControl: {
-        margin: theme.spacing(1),
+        //margin: theme.spacing(1),
     },
     menuItem: {
         justifyContent: "space-between",
@@ -52,7 +52,6 @@ export default function SavedCodeMenu({ sendCodeToEditor }) {
     const handleDelete = (id) => {
         CodeSaveService.deleteCode(id, state.token)
             .then((response) => {
-                console.log(response.data.name)
                 dispatch({
                     type: "CODES",
                     payload: state.codesList.filter(code => code.id !== id)

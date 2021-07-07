@@ -131,6 +131,14 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         borderBottomRightRadius: "10px",
         borderBottomLeftRadius: "10px",
+    },
+    codeList: {
+        display: 'flex',
+        justifyContent: "space-evenly",
+        alignItems: "center",
+        backgroundColor: "#ebb879",
+        borderRadius: "5px",
+        color: "black"
     }
 }));
 
@@ -284,10 +292,8 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
     }
 
     const sendCodeToEditor = (codeFromMenu) => {
-        console.log(codeFromMenu);
         if(!codeFromMenu.name){
             setCode(startup.get(language))
-
         } else {
             setCode(codeFromMenu)
         }
@@ -460,14 +466,16 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
                 <div className={classes.editorItemContainer} style={{ flex: hideDebug ? "6" : "1"}}>
                     <div className={classes.editorTitle}>
 
-                        <span className={classes.inputs}>
+                        <span className={classes.codeList}>
                             <SavedCodeMenu
                                 className={classes.formControl}
                                 sendCodeToEditor={sendCodeToEditor} />
-                            {code.name ? `"${code.name}"` : "Default"}
+                                <span style={{ margin: "5px" }}>
+                                    {code.name ? `"${code.name}"` : "Default"}
+                                </span>
                         </span>
                         
-                        <SaveCodeDialog code={code.code}/>
+                        <SaveCodeDialog code={code}/>
                     </div>
 
                     <AceEditor
