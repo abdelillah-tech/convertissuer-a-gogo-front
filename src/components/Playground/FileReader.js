@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '2px',
         backgroundColor: "#2f3129",
         color: "white",
+        borderRadius: "10px"
     },
     inputs: {
         display: 'flex',
@@ -93,9 +94,13 @@ const FileReader = () => {
                         className={classes.readerTitle}>
                         <h3 className={classes.flexH}>
                             <Typography>Edited file</Typography>
-                            <IconButton onClick={downloadFile}>
-                                <CloudDownloadIcon style={{ color: "white" }}></CloudDownloadIcon>
-                            </IconButton>
+                            { 
+                                state.resultFileUrl 
+                                    ? <a href={state.resultFileUrl} target="_blank">
+                                        <IconButton><CloudDownloadIcon style={{ color: "white" }}></CloudDownloadIcon></IconButton>
+                                      </a>
+                                    : <div></div>
+                            }
                         </h3>
                     </div>
                     <div className={classes.iframeContainer}>
