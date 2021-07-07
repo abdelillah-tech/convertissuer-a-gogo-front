@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     fileReader: {
         margin: theme.spacing(1),
         width: "100%",
-        height: "auto",
+        height: "400px",
         border: "2px solid #ff8C00",
         borderRadius: '2px',
         backgroundColor: "#2f3129",
@@ -53,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
     iframe: {
         backgroundColor: "white",
         margin: "5px",
+        height: "337px"
     }
 }));
 
