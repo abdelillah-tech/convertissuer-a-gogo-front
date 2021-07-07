@@ -5,6 +5,7 @@ import PubSub from 'pubsub-js';
 import alertType from '../../common/AlertTypes';
 import pubMessage from '../../common/MessagePublisher';
 
+
 import 'brace/mode/javascript';
 import 'brace/mode/python';
 
@@ -40,6 +41,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -53,6 +55,12 @@ const useStyles = makeStyles((theme) => ({
     inputs: {
         display: 'flex',
         justifyContent: "space-evenly",
+        alignItems: "center",
+    },
+    
+    inputsBetween: {
+        display: 'flex',
+        justifyContent: "space-between",
         alignItems: "center",
     },
     formControl: {
@@ -327,7 +335,7 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
 
     return (
         <div className={classes.container}>
-            <div className={classes.inputs}>
+            <div className={classes.inputsBetween}>
                 <div className={classes.inputs}>
                     <FormControl className={classes.formControl}>
                         <InputLabel id="theme-label">Theme</InputLabel>
@@ -410,7 +418,7 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
                         {
                             waitUploadResponse
                                 ? <CircularProgress />
-                                : "Upload"
+                                : <div className={classes.inputs}><CloudUploadIcon></CloudUploadIcon>&nbsp;file</div>
                         }
                         <input
                             type="file"
@@ -459,7 +467,7 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
                             {code.name ? `"${code.name}"` : "Default"}
                         </span>
                         
-                        <SaveCodeDialog code={code}/>
+                        <SaveCodeDialog code={code.code}/>
                     </div>
 
                     <AceEditor

@@ -13,6 +13,7 @@ import CodeSaveService from '../../api/CodeSave';
 import { Context } from "../../common/Store";
 import pubMessage from '../../common/MessagePublisher';
 import alertType from '../../common/AlertTypes';
+import SaveIcon from '@material-ui/icons/Save';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -39,7 +40,7 @@ const SaveCodeDialog = (code) => {
 
     const handleClickOpen = () => {
         console.log(code);
-        if(code.code.name){
+        if(code.name){
             handleUpdate()
         } else {
             setOpen(true);
@@ -53,25 +54,26 @@ const SaveCodeDialog = (code) => {
     const handleSave = () => {
         let data = {
             code: code.code,
-            name: code.name,
+            name: name,
         }
         CodeSaveService.save(data, state.token)
             .then((response) => {
                 pubMessage(undefined, 'Your code is now saved', alertType.success)
+                CodeSaveService.getCodes(state.token)
+                    .then((response) => {
+                        dispatch({
+                            type: "CODES",
+                            payload: response.data
+                        })
+                    }).catch(e => {
+                        console.log(e.response)
+                        pubMessage(e, 'Sorry! We cannot load your codes for the moment', alertType.error)
+                        setOpen(false);
+                    })
             }).catch(e => {
                 pubMessage(e, 'Sorry! We cannot load your codes for the moment', alertType.error)
             })
-        CodeSaveService.getCodes(state.token)
-            .then((response) => {
-                dispatch({
-                    type: "CODES",
-                    payload: response.data
-                })
-            }).catch(e => {
-                console.log(e.response)
-                pubMessage(e, 'Sorry! We cannot load your codes for the moment', alertType.error)
-                setOpen(false);
-            })
+        
         setOpen(false);
     }
     
@@ -111,15 +113,13 @@ const SaveCodeDialog = (code) => {
                 variant="contained"
                 className={classes.FormControl}
                 onClick={handleClickOpen}>
-                <Typography>
-                    {code.code.name ? "update" : "Save" }
-                </Typography>
+                    <SaveIcon/>
             </Button>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Save code</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Please a name to your code
+                        Please enter a title to your code
                     </DialogContentText>
                     <TextField
                         autoFocus
