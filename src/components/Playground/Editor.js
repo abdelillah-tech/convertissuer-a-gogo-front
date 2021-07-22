@@ -459,7 +459,7 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
                                 </span>
                         </span>
                         
-                        <SaveCodeDialog code={code}/>
+                        <SaveCodeDialog code={code} language={language}/>
                     </div>
 
                     <AceEditor
@@ -515,8 +515,6 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
                             editorProps={{ $blockScrolling: true }}
                             
                         />
-                        
-
                 </div>
             </div>
         </div>

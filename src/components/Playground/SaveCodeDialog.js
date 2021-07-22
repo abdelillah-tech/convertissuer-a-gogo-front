@@ -53,6 +53,7 @@ const SaveCodeDialog = (code) => {
     const handleSave = () => {
         let data = {
             code: code.code.code,
+            language: code.language,
             name: name,
         }
         CodeSaveService.save(data, state.token)
