@@ -487,7 +487,7 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
                 <div className={classes.editorItemContainer} style={{ flex: "1"}}>
                     <div className={classes.editorTitle}>
                         <span>
-                            Debug output
+                            Debug output:
                         </span>
                         { 
                         hideDebug 
