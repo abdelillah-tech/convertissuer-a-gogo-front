@@ -165,7 +165,7 @@ const Login = () => {
                     </CardActions>
                 </Card>
                 <Typography>
-                    Or <Link href="/signup">Register now!</Link>
+                    Or <Link to="/signup">Register now!</Link>
                 </Typography>
             </form>
         </div>

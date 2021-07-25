@@ -181,7 +181,7 @@ const Signup = () => {
                         </Button>
                         </CardActions>
                     </Card>
-                    <Typography>Already registed? <Link href="/login">Login now!</Link></Typography>
+                    <Typography>Already registed? <Link to="/login">Login now!</Link></Typography>
                 </form>
             </div>
         </React.Fragment>
