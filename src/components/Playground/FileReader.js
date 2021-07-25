@@ -1,11 +1,9 @@
-import React, { useState, useContext } from 'react';
+import React, {  useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Context } from "../../common/Store";
 import { Typography } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import IconButton from '@material-ui/core/IconButton';
-import { responsiveFontSizes } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -23,7 +21,6 @@ const useStyles = makeStyles((theme) => ({
         width: "100%",
         height: "400px",
         border: "2px solid #ff8C00",
-        borderRadius: '2px',
         backgroundColor: "#2f3129",
         color: "white",
         borderRadius: "10px"
@@ -64,10 +61,6 @@ const FileReader = () => {
 
     const classes = useStyles();
 
-    const downloadFile = () => {
-        console.log("todo: download file")
-    }
-
     return (
         <div className={classes.container}>
             <div className={classes.flexHorizontal}>
@@ -80,6 +73,7 @@ const FileReader = () => {
                     </div>
                     <div className={classes.iframeContainer}>
                         <iframe
+                            title="input"
                             style={{flex: 1}}
                             className={classes.iframe}
                             src={state.selectedFile.url}
@@ -96,7 +90,7 @@ const FileReader = () => {
                             <Typography>Edited file</Typography>
                             { 
                                 state.resultFileUrl 
-                                    ? <a href={state.resultFileUrl} target="_blank">
+                                    ? <a href={state.resultFileUrl} target="_blank" rel="noopener noreferrer">
                                         <IconButton><CloudDownloadIcon style={{ color: "white" }}></CloudDownloadIcon></IconButton>
                                       </a>
                                     : <div></div>
@@ -105,6 +99,7 @@ const FileReader = () => {
                     </div>
                     <div className={classes.iframeContainer}>
                         <iframe
+                            title="output"
                             style={{flex: 1}}
                             className={classes.iframe}
                             src={state.resultFileUrl}
