@@ -223,6 +223,8 @@ const Editor = () => {
 
     const [results, setResults] = useState(null);
 
+    const [similarity, setSimilarity] = useState(0);
+
     const [codeStats, setCodeStats] = useState({
         time: 0,
         inputFileSize: {unit: "", value: 0},
@@ -306,6 +308,7 @@ const Editor = () => {
             .then((response) => {
                 if (!response.data.result.result.stderr) {
                     setResults(response.data.result.result.stdout)
+                    setSimilarity(response.data.similarity)
                     setCodeStats({
                         time: response.data.result.result.executionTime,
                         inputFileSize: response.data.result.result.inputFileSize,
@@ -615,8 +618,8 @@ const Editor = () => {
                                 <div>&nbsp;{codeStats.outputFileSize.value}&nbsp;{codeStats.outputFileSize.unit}</div> 
                             </div>
                             <div className={classes.statsItem}>
-                                <div>Code uniqueness:</div> 
-                                <div>&nbsp;66&nbsp;%</div> 
+                                <div>Code resemblance:</div> 
+                                <div>&nbsp;{similarity}&nbsp;%</div> 
                             </div>
                         </div>
                 </div>
