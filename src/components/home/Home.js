@@ -81,12 +81,12 @@ const useStyles = makeStyles((theme) => ({
     },
     {
       title: 'Preview',
-      subheader: 'Compare your input and output directly on our website',
+      subheader: 'Compare your input and output',
 
       description: [
-        '.bmp .png . jpg',
+        '.bmp .png .jpg',
         'txt files',
-        'and more!',
+        'code analysis',
       ],
     },
   ];

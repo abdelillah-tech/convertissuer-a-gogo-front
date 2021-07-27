@@ -211,9 +211,9 @@ const Editor = () => {
         'python',
     ]
 
-const startup = new Map();
-startup.set('javascript', {code: 'const run = async (hex_buffer) => {\n\tconsole.log(hex_buffer);\n\treturn hex_buffer\n}'})
-startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn hex_data'})
+    const startup = new Map();
+    startup.set('javascript', {code: 'const run = async (hex_buffer) => {\n\tconsole.log(hex_buffer);\n\treturn hex_buffer\n}'})
+    startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn hex_data'})
 
     const [theme, setTheme] = useState(themes[0]);
 
