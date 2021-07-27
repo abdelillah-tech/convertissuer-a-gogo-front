@@ -1,7 +1,7 @@
 import React, {  useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Context } from "../../common/Store";
-import { Typography } from '@material-ui/core';
+import { Typography, Link } from '@material-ui/core';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import IconButton from '@material-ui/core/IconButton';
 
@@ -64,49 +64,52 @@ const FileReader = () => {
     return (
         <div className={classes.container}>
             <div className={classes.flexHorizontal}>
-                <div
-                    className={classes.fileReader}>
-                    <div className={classes.readerTitle}>
-                        <h3 className={classes.flexH}>
-                            <Typography>Original file</Typography>
-                        </h3>
-                    </div>
-                    <div className={classes.iframeContainer}>
-                        <iframe
-                            title="input"
-                            style={{flex: 1}}
-                            className={classes.iframe}
-                            src={state.selectedFile.url}
-                            >
-                        </iframe>
-                    </div>
-                </div>
-
-                <div
-                    className={classes.fileReader}>
+                { state.selectedFile.url &&
                     <div
-                        className={classes.readerTitle}>
-                        <h3 className={classes.flexH}>
-                            <Typography>Edited file</Typography>
-                            { 
-                                state.resultFileUrl 
-                                    ? <a href={state.resultFileUrl} target="_blank" rel="noopener noreferrer">
-                                        <IconButton><CloudDownloadIcon style={{ color: "white" }}></CloudDownloadIcon></IconButton>
-                                      </a>
-                                    : <div></div>
-                            }
-                        </h3>
+                        className={classes.fileReader}>
+                        <div className={classes.readerTitle}>
+                            <h3 className={classes.flexH}>
+                                <Typography>Original file</Typography>
+                            </h3>
+                        </div>
+                        <div className={classes.iframeContainer}>
+                            <iframe
+                                title="input"
+                                style={{flex: 1}}
+                                className={classes.iframe}
+                                src={state.selectedFile.url}
+                                >
+                            </iframe>
+                        </div>
                     </div>
-                    <div className={classes.iframeContainer}>
-                        <iframe
-                            title="output"
-                            style={{flex: 1}}
-                            className={classes.iframe}
-                            src={state.resultFileUrl}
-                            >
-                        </iframe>
+                }
+                { state.resultFileUrl &&
+                    <div
+                        className={classes.fileReader}>
+                        <div
+                            className={classes.readerTitle}>
+                            <h3 className={classes.flexH}>
+                                <Typography>Edited file</Typography>
+                                { 
+                                    state.resultFileUrl 
+                                        ? <Link to={state.resultFileUrl} target="_blank" download>
+                                            <IconButton><CloudDownloadIcon style={{ color: "white" }}></CloudDownloadIcon></IconButton>
+                                        </Link>
+                                        : <div></div>
+                                }
+                            </h3>
+                        </div>
+                        <div className={classes.iframeContainer}>
+                            <iframe
+                                title="output"
+                                style={{flex: 1}}
+                                className={classes.iframe}
+                                src={state.resultFileUrl}
+                                >
+                            </iframe>
+                        </div>
                     </div>
-                </div>
+                }
             </div>
         </div>
     )
