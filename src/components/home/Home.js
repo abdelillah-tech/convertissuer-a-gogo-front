@@ -52,7 +52,8 @@ const useStyles = makeStyles((theme) => ({
     },
 
     card: {
-        height: "100%"
+        flex: 1,
+        margin: "10px"
     },
     startCoding: {
         display: "flex",
@@ -61,12 +62,19 @@ const useStyles = makeStyles((theme) => ({
     startCodingBtn: {
         backgroundColor: "#ff8C00",
         color: "white"
+    },
+    cardsContainer: {
+        display: "flex",
+        justifyContent: "space-evenly",
+        alignItems: "stretch"
     }
+    
   }));
 
   const cards = [
     {
       title: 'File upload',
+      subheader: 'Upload and test your files',
       description: ['up to 10 files', 'stored on AWS S3'],
     },
     {
@@ -86,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
       description: [
         '.bmp .png .jpg',
         'txt files',
-        'code analysis',
+        'code comparison',
       ],
     },
   ];
@@ -98,7 +106,7 @@ const Home = () => {
     const history = useHistory();
     const startCoding = () => {
         if(state.isAuthenticated){
-            history.push("/playground");
+            history.push("/file-coding");
         } else {
             history.push("/login");
         }
@@ -116,34 +124,32 @@ const Home = () => {
             </Container>
             {/* End hero unit */}
             <Container maxWidth="md" component="main">
-                <Grid container spacing={5} alignItems="flex-end">
+                <div className={classes.cardsContainer}>
                 {cards.map((card) => (
                     // Enterprise card is full width at sm breakpoint
-                    <Grid item key={card.title} xs={12} sm={6} md={4}>
-                        <Card style={{height: "100%"}}>
-                            <CardHeader
-                            title={card.title}
-                            subheader={card.subheader}
-                            titleTypographyProps={{ align: 'center' }}
-                            subheaderTypographyProps={{ align: 'center' }}
-                            action={card.title === 'Pro' ? <StarIcon /> : null}
-                            className={classes.cardHeader}
-                            />
-                            <CardContent>
-                            <ul>
-                                {card.description.map((line) => (
-                                <Typography component="li" variant="subtitle1" align="center" key={line}>
-                                    {line}
-                                </Typography>
-                                ))}
-                            </ul>
-                            </CardContent>
-                            <CardActions>
-                            </CardActions>
-                        </Card>
-                    </Grid>
+                    <Card className={classes.card}>
+                        <CardHeader
+                        title={card.title}
+                        subheader={card.subheader}
+                        titleTypographyProps={{ align: 'center' }}
+                        subheaderTypographyProps={{ align: 'center' }}
+                        action={card.title === 'Pro' ? <StarIcon /> : null}
+                        className={classes.cardHeader}
+                        />
+                        <CardContent>
+                        <ul>
+                            {card.description.map((line) => (
+                            <Typography component="li" variant="subtitle1" align="center" key={line}>
+                                {line}
+                            </Typography>
+                            ))}
+                        </ul>
+                        </CardContent>
+                        <CardActions>
+                        </CardActions>
+                    </Card>
                 ))}
-                </Grid>
+                </div>
             </Container>
             <br/>
             <Container className={classes.startCoding}>

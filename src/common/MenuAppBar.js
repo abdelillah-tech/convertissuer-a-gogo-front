@@ -74,8 +74,8 @@ export default function MenuAppBar() {
         else {
             setMenu([
                 <MenuItem key="playground" onClick={handleClose}>
-                    <Link to="/playground" className={classes.links}>
-                        Playground
+                    <Link to="/file-coding" className={classes.links}>
+                        File Coding
                     </Link>
                 </MenuItem>,
                 <MenuItem key="profile" onClick={handleClose}>

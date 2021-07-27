@@ -36,7 +36,7 @@ const App = () => {
                 <Route path="/profile">
                     <div>{!state.isAuthenticated ? <Login /> : <Profile />}</div>
                 </Route>
-                <Route path="/playground">
+                <Route path="/file-coding">
                     <div>{!state.isAuthenticated ? <Login /> : <Playground />}</div>
                 </Route>
             </Switch>
