@@ -254,6 +254,9 @@ const Editor = () => {
         },
     };
 
+    useEffect(() => {
+        getCodes();
+    }, [])
     const onChangeCode = (value) => {
         let currentCode = code
         code.code = value
@@ -268,6 +271,7 @@ const Editor = () => {
         localStorage.setItem("language", event.target.value);
         setLanguage(event.target.value);
         setCode(startup.get(event.target.value))
+        getCodes(event.target.value);
     }
 
     const handleChangeFile = (event) => {
@@ -276,6 +280,18 @@ const Editor = () => {
             type: "SELECT",
             payload: event.target.value
         })
+    }
+
+    const getCodes = (newLanguage) => {
+        CodeSaveService.getCodes(state.token, newLanguage ? newLanguage : language)
+            .then((response) => {
+                dispatch({
+                    type: "CODES",
+                    payload: response.data
+                })
+            }).catch(e => {
+                pubMessage(e, 'Sorry! We cannot load your codes for the moment', alertType.error)
+            })
     }
 
     const handleUploadFile = (event) => {
@@ -525,6 +541,7 @@ const Editor = () => {
 
                         <span className={classes.codeList}>
                             <SavedCodeMenu
+                                code={code}
                                 className={classes.formControl}
                                 sendCodeToEditor={sendCodeToEditor} />
                                 <span style={{ margin: "5px" }}>

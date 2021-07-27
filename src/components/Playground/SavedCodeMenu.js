@@ -22,15 +22,20 @@ const useStyles = makeStyles((theme) => ({
         //margin: theme.spacing(1),
     },
     menuItem: {
-        justifyContent: "space-between",
+        padding: "0px"
     },
     iconButton: {
         color: "red"
+    },
+    savedCodeTitle: {
+        margin: "0px",
+        padding: "15px",
+        width: "100%"
     }
 }));
 
 
-export default function SavedCodeMenu({ sendCodeToEditor }) {
+export default function SavedCodeMenu({ code, sendCodeToEditor }) {
 
     const [state, dispatch] = useContext(Context);
 
@@ -56,6 +61,9 @@ export default function SavedCodeMenu({ sendCodeToEditor }) {
                     type: "CODES",
                     payload: state.codesList.filter(code => code.id !== id)
                 })
+                if(code.id === id){
+                    handleSelect({name: null, code: null, id: null, language: null})
+                }
                 pubMessage(undefined, `Code deleted successfuly`, alertType.success)
             }).catch(e => {
                 pubMessage(undefined, 'Sorry! We cannot delete this code for the moment', alertType.error)
@@ -92,8 +100,14 @@ export default function SavedCodeMenu({ sendCodeToEditor }) {
                     <MenuItem
                         key={code.name}
                         className={classes.menuItem}
-                        onClick={() => handleSelect(code)}>
-                        {code.name}
+                        >
+                        
+                        <span 
+                            onClick={() => handleSelect(code)}
+                            className={classes.savedCodeTitle}>
+                            {code.name}
+                        </span>
+                        
                         <IconButton 
                             aria-label="delete" 
                             className={classes.iconButton}

@@ -39,7 +39,7 @@ const SaveCodeDialog = ({code, language, savedCode}) => {
     const [name, setName] = useState("")
 
     const handleClickOpen = () => {
-        if(code.code.name){
+        if(code.id !== null){
             handleUpdate()
         } else {
             setOpen(true);
@@ -57,15 +57,15 @@ const SaveCodeDialog = ({code, language, savedCode}) => {
             name: name,
         }
         CodeSaveService.save(data, state.token)
-            .then((response) => {
+            .then((responseSaveCode) => {
                 pubMessage(undefined, 'Your code is now saved', alertType.success)
-                CodeSaveService.getCodes(state.token)
-                    .then((response) => {
+                CodeSaveService.getCodes(state.token, language)
+                    .then((responseAllCodes) => {
                         dispatch({
                             type: "CODES",
-                            payload: response.data
+                            payload: responseAllCodes.data
                         })
-                        savedCode(data)
+                        savedCode(responseSaveCode.data)
                     }).catch(e => {
                         pubMessage(e, 'Sorry! We cannot load your codes for the moment', alertType.error)
                         setOpen(false);
@@ -77,14 +77,13 @@ const SaveCodeDialog = ({code, language, savedCode}) => {
     }
     
     const handleUpdate = () => {
-        let data = code.code
-        CodeSaveService.update(data, state.token)
+        CodeSaveService.update(code, state.token)
             .then((response) => {
                 pubMessage(undefined, 'Your code is now updated', alertType.success)
             }).catch(e => {
                 pubMessage(e, 'Sorry! We cannot load your codes for the moment', alertType.error)
             })
-        CodeSaveService.getCodes(state.token)
+        CodeSaveService.getCodes(state.token, language)
             .then((response) => {
                 dispatch({
                     type: "CODES",

@@ -44,15 +44,6 @@ const Playground = () => {
             }).catch(e => {
                 pubMessage(e, 'Sorry! We cannot load your files for the moment', alertType.error)
             })
-        CodeSaveService.getCodes(state.token)
-            .then((response) => {
-                dispatch({
-                    type: "CODES",
-                    payload: response.data
-                })
-            }).catch(e => {
-                pubMessage(e, 'Sorry! We cannot load your codes for the moment', alertType.error)
-            })
     }, []);
 
     const classes = useStyles();

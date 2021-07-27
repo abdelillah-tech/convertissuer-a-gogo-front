@@ -22,9 +22,9 @@ const update = (data, token) => {
             });
 }
 
-const getCodes = (token) => {
+const getCodes = (token, language) => {
     return API
-        .get("/user/code/",
+        .get(`/user/code?language=${language}`,
             {
                 headers: {
                     'Authorization': `Bearer ${token}`
