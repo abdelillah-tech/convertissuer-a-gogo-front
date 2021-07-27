@@ -212,8 +212,8 @@ const Editor = () => {
     ]
 
     const startup = new Map();
-    startup.set('javascript', {code: 'const run = async (hex_buffer) => {\n\tconsole.log(hex_buffer);\n\treturn hex_buffer\n}'})
-    startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn hex_data'})
+    startup.set('javascript', {code: 'const run = async (hex_buffer) => {\n\tconsole.log(hex_buffer);\n\treturn hex_buffer\n}', id: null, language: "javascript"})
+    startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn hex_data', id: null, language: "python"})
 
     const [theme, setTheme] = useState(themes[0]);
 
@@ -278,10 +278,6 @@ const Editor = () => {
         })
     }
 
-    const componentWillMount = () =>{
-        getFiles()
-    }
-
     const handleUploadFile = (event) => {
         setWaitUploadResponse(true);
         const data = new FormData()
@@ -304,7 +300,7 @@ const Editor = () => {
 
     const handleExecute = () => {
         setWaitExecuteResponse(true)
-        ExecuteService.execute(language, code.code, currentFile, state.token)
+        ExecuteService.execute(language, code, currentFile, state.token)
             .then((response) => {
                 if (!response.data.result.result.stderr) {
                     setResults(response.data.result.result.stdout)
