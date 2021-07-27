@@ -12,7 +12,6 @@ const save = (data, token) => {
 }
 
 const update = (data, token) => {
-    console.log(data);
     return API
         .put("/user/code/",
             data,

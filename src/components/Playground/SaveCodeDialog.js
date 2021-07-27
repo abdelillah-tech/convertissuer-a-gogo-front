@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const SaveCodeDialog = (code) => {
+const SaveCodeDialog = ({code, language, savedCode}) => {
 
     const [state, dispatch] = useContext(Context);
 
@@ -52,8 +52,8 @@ const SaveCodeDialog = (code) => {
 
     const handleSave = () => {
         let data = {
-            code: code.code.code,
-            language: code.language,
+            code: code.code,
+            language: language,
             name: name,
         }
         CodeSaveService.save(data, state.token)
@@ -65,6 +65,7 @@ const SaveCodeDialog = (code) => {
                             type: "CODES",
                             payload: response.data
                         })
+                        savedCode(data)
                     }).catch(e => {
                         pubMessage(e, 'Sorry! We cannot load your codes for the moment', alertType.error)
                         setOpen(false);
@@ -72,7 +73,6 @@ const SaveCodeDialog = (code) => {
             }).catch(e => {
                 pubMessage(e, 'Sorry! We cannot load your codes for the moment', alertType.error)
             })
-        
         setOpen(false);
     }
     

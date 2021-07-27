@@ -42,6 +42,8 @@ import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { display, minWidth } from '@material-ui/system';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -62,11 +64,22 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         justifyContent: "space-between",
         alignItems: "center",
+        marginRight: "5px",
+        marginLeft: "5px",
+    },
+    inputsBetweenTop: {
+        display: 'flex',
+        justifyContent: "space-between",
+        alignItems: "center",
+        height: "80px",
+        marginRight: "5px",
+        marginLeft: "5px",
     },
     formControl: {
         margin: theme.spacing(1),
         minWidth: 120,
         maxWidth: 300,
+        minHeight: "40px"
     },
 
     flexEven: {
@@ -90,7 +103,8 @@ const useStyles = makeStyles((theme) => ({
     },
 
     menu: {
-        display: "flex"
+        display: "flex",
+        minWidth: "60px"
     },
 
     menuItem: {
@@ -120,6 +134,17 @@ const useStyles = makeStyles((theme) => ({
         whiteSpace: "nowrap",
         height: "40px"
     },
+    
+    editorTitleStats: {
+        color: "white",
+        backgroundColor: "#2f3129",
+        padding: "8px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        whiteSpace: "nowrap",
+        height: "40px",
+    },
     editorItemContainer: {
         margin: "5px",
         display: "flex",
@@ -132,6 +157,10 @@ const useStyles = makeStyles((theme) => ({
         borderBottomRightRadius: "10px",
         borderBottomLeftRadius: "10px",
     },
+    debugAceEditor: {       
+        borderTop: "2px solid #ff8C00",
+        display: "flex"
+    },
     codeList: {
         display: 'flex',
         justifyContent: "space-evenly",
@@ -139,6 +168,27 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: "#ebb879",
         borderRadius: "5px",
         color: "black"
+    },
+    stats: {
+        borderRadius: "5px",
+        backgroundColor: "#ff8C00",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        alignItems: "start",
+        padding: "4px",
+    },
+    statsItem: {
+        display: "flex",
+        flexDirection: "row",
+        margin: "8px"
+    },
+    statsBody: {
+        backgroundColor: "#272822",
+        color: "white",
+        borderTop: "2px solid #ff8C00",
+        borderBottomRightRadius: "10px",
+        borderBottomLeftRadius: "10px"
     }
 }));
 
@@ -173,7 +223,11 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
 
     const [results, setResults] = useState(null);
 
-    const [codeExecTime, setCodeExecTime] = useState(0);
+    const [codeStats, setCodeStats] = useState({
+        time: 0,
+        inputFileSize: {unit: "", value: 0},
+        outputFileSize: {unit: "", value: 0}
+    });
 
     const [waitExecuteResponse, setWaitExecuteResponse] = useState(false);
     const [executeTimer, setExecuteTimer] = useState(false);
@@ -252,7 +306,11 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
             .then((response) => {
                 if (!response.data.result.result.stderr) {
                     setResults(response.data.result.result.stdout)
-                    setCodeExecTime(response.data.result.result.executionTime)
+                    setCodeStats({
+                        time: response.data.result.result.executionTime,
+                        inputFileSize: response.data.result.result.inputFileSize,
+                        outputFileSize: response.data.result.result.outputFileSize
+                    })
                     setOutputColor("white")
                     if(response.data.result.result.resultKey){
                         PrivateFileService.urlFromKey(response.data.result.result.resultKey, state.token).then((response) => {
@@ -264,7 +322,11 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
                     }
                 } else {
                     setResults(`${response.data.result.result.stdout ? response.data.result.result.stdout : ''}\n\n${response.data.result.result.stderr}`);
-                    setCodeExecTime(response.data.result.result.executionTime)
+                    setCodeStats({
+                        time: response.data.result.result.executionTime,
+                        inputFileSize: response.data.result.result.inputFileSize,
+                        outputFileSize: response.data.result.result.outputFileSize
+                    })
                     setOutputColor("red")
                 }
 
@@ -298,6 +360,14 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
             setCode(codeFromMenu)
         }
     }
+    
+    const savedCode = (code) => {
+        if(!code.name){
+            setCode(startup.get(language))
+        } else {
+            setCode(code)
+        }
+    }
 
     const startTimer = async (millis) => {
         setExecuteTimer(true)
@@ -313,9 +383,12 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
     }
 
     const handleDeleteFile = (file) => {
-        FileUploadService.deleteFile(file.key, state.token)
+        FileUploadService.deleteFile(file.id, state.token)
             .then((response) => {
-                console.log(response);
+                pubMessage(null, 'File deleted', alertType.success)
+                state.selectedFile = {id: null, name: '', url: ''};
+                setCurrentFile({id: null, name: '', url: ''})
+                getFiles()
             }).catch(e => {
                 pubMessage(e, 'Error in delete file', alertType.error)
             })
@@ -325,7 +398,7 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
 
     return (
         <div className={classes.container}>
-            <div className={classes.inputsBetween}>
+            <div className={classes.inputsBetweenTop}>
                 <div className={classes.inputs}>
                     <FormControl className={classes.formControl}>
                         <InputLabel id="theme-label">Theme</InputLabel>
@@ -364,37 +437,46 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
                     </FormControl>
 
                     <FormControl className={classes.formControl}>
-                        <InputLabel id="file-label">Files</InputLabel>
-                        <Select
-                            labelId="file-label"
-                            id="file"
-                            value={currentFile}
-                            onChange={handleChangeFile}
-                            input={<Input />}
-                            MenuProps={MenuProps}
-                            className={classes.menu}
-                        >
-                            {state.filesList.map((file) => (
-                                <MenuItem key={file.name} value={file} className={classes.menuItem, classes.flexBetween}>
-                                    {file.name}
-                                </MenuItem>
-                            ))}
-                        </Select>
+
+                        <div className={classes.inputsBetween}>
+                            <div>
+
+                                <InputLabel id="file-label">File</InputLabel>
+                                <Select
+                                    labelId="file-label"
+                                    id="file"
+                                    value={currentFile}
+                                    onChange={handleChangeFile}
+                                    input={<Input />}
+                                    MenuProps={MenuProps}
+                                    className={classes.menu}
+                                >
+                                    {state.filesList.map((file) => (
+                                        <MenuItem key={file.name} value={file} className={classes.menuItem, classes.flexBetween}>
+                                            {file.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </div>
+
+                            {
+                            currentFile.id
+                                ? 
+                                <div className={classes.flexEven}>
+                                    <IconButton 
+                                        aria-label="delete" 
+                                        className={classes.iconButton}
+                                        onClick={() => handleDeleteFile(currentFile)}>
+                                        <DeleteIcon></DeleteIcon>
+                                    </IconButton>   
+                                </div>
+                                : ""
+                            }
+                        </div>
+
                     </FormControl>
 
-                    {
-                    currentFile.id
-                        ? 
-                        <div className={classes.flexEven}>
-                            <Button 
-                                aria-label="delete" 
-                                className={classes.iconButton}
-                                onClick={() => handleDeleteFile(currentFile)}>
-                                Delete file
-                            </Button>   
-                        </div>
-                        : ""
-                    }
+                    
 
                 </div>
                 <div className={classes.inputs}>
@@ -407,7 +489,7 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
                     >
                         {
                             waitUploadResponse
-                                ? <CircularProgress />
+                                ? <CircularProgress size="10"/>
                                 : <div className={classes.inputs}><CloudUploadIcon></CloudUploadIcon>&nbsp;file</div>
                         }
                         <input
@@ -435,15 +517,7 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
                             }
                         </Typography>
                     </Button>
-                    <span>
-                        Execution time:&nbsp;
-                        {
-                            waitExecuteResponse
-                                ? <CircularProgress />
-                                : `${codeExecTime}ms`
-                        }
 
-                    </span>
                 </div>
             </div>
             <div className={classes.editorContainer}>
@@ -459,7 +533,11 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
                                 </span>
                         </span>
                         
-                        <SaveCodeDialog code={code} language={language}/>
+                        <SaveCodeDialog 
+                            code={code}
+                            language={language}
+                            savedCode={savedCode}
+                            />
                     </div>
 
                     <AceEditor
@@ -497,7 +575,7 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
                     </div>
 
                         <AceEditor
-                            className={classes.aceEditor}
+                            className={classes.debugAceEditor}
                             mode="text"
                             style={{ 
                                 color: outputColor
@@ -515,6 +593,32 @@ startup.set('python', {code: 'def run(hex_data):\n\tprint(hex_data)\n\treturn he
                             editorProps={{ $blockScrolling: true }}
                             
                         />
+                        
+
+                        <div className={classes.editorTitleStats}>
+                            <span>
+                                Stats:
+                            </span>
+                        </div>
+                        <div className={classes.statsBody}>
+                            <div className={classes.statsItem}>
+                                <div>Execution:</div> 
+                                <div>&nbsp;{codeStats.time}&nbsp;ms</div> 
+                            </div>
+                            <div className={classes.statsItem}>
+                                <div>Input file:</div> 
+                                <div>&nbsp;{codeStats.inputFileSize.value}&nbsp;{codeStats.inputFileSize.unit}</div> 
+                                
+                            </div>
+                            <div className={classes.statsItem}>
+                                <div>Output file:</div> 
+                                <div>&nbsp;{codeStats.outputFileSize.value}&nbsp;{codeStats.outputFileSize.unit}</div> 
+                            </div>
+                            <div className={classes.statsItem}>
+                                <div>Code uniqueness:</div> 
+                                <div>&nbsp;66&nbsp;%</div> 
+                            </div>
+                        </div>
                 </div>
             </div>
         </div>
