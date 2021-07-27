@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'http://localhost:3030/api/v1';
+export const API_BASE_URL = process.env.NODE_ENV === "production" ? "http://ec2-15-188-232-65.eu-west-3.compute.amazonaws.com/api/v1" : 'http://localhost:3030/api/v1';
 export const ACCESS_TOKEN = 'token';
 
 export const NAME_MIN_LENGTH = 4;
