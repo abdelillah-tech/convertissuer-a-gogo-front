@@ -21,7 +21,15 @@ const useStyles = makeStyles((theme) => ({
         color: '#ff8C00'
     },
     toolBar: {
-        background: '#212121'
+        background: '#212121',
+        display: "flex",
+        justifyContent: "space-between"
+    },
+    toolBarItems: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center"
     },
     iconButton: {
         color: '#ff8C00'
@@ -32,7 +40,8 @@ const useStyles = makeStyles((theme) => ({
     },
     links: {
         textDecoration: 'none',
-        color: '#212121'
+        color: '#212121',
+        margin: '3px',
     }
 }));
 
@@ -101,9 +110,18 @@ export default function MenuAppBar() {
         <div className={classes.root}>
             <AppBar position="static">
                 <Toolbar className={classes.toolBar}>
-                    <Typography variant="h6" className={classes.title}>
-                        {APP_NAME}
-                    </Typography>
+                    <div className={classes.toolBarItems}>
+                        <Link
+                            to={{
+                                pathname: "/",
+                            }}
+                            className={classes.links}
+                            >
+                            <Typography variant="h6" className={classes.title} to="/home">
+                                {APP_NAME}
+                            </Typography>
+                        </Link>
+                    </div>
                     <div>
                         <IconButton
                             aria-label="account of current user"
