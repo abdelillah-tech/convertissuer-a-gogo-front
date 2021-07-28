@@ -56,12 +56,19 @@ const useStyles = makeStyles((theme) => ({
         margin: "10px"
     },
     startCoding: {
+        height: "300px",
         display: "flex",
-        justifyContent: "center"
+        justifyContent: "center",
+        alignItems: "center"
     },
     startCodingBtn: {
-        backgroundColor: "#ff8C00",
-        color: "white"
+        backgroundColor: "white",
+        color: "#ff8C00",
+        border: "2px solid #ff8C00",
+        "&:hover": {
+            color: "white",
+            border: 0
+        }
     },
     cardsContainer: {
         display: "flex",
@@ -93,8 +100,16 @@ const useStyles = makeStyles((theme) => ({
 
       description: [
         '.bmp .png .jpg',
-        'txt files',
-        'code comparison',
+        '.txt',
+        'And more!',
+      ],
+    },
+    {
+      title: 'Code analysis',
+      subheader: 'Compare your code with others',
+
+      description: [
+        'Get a percentage of similarity with other users code',
       ],
     },
   ];
@@ -113,7 +128,7 @@ const Home = () => {
     }
 
     return(
-        <div>
+        <div style={{backgroundImage: 'url(' + require('../../images/background/background.jpg') + ')', height: "100%"}}>
             <Container maxWidth="sm" component="main" className={classes.heroContent}>
                 <Typography component="h1" variant="h4" align="center" color="textPrimary" gutterBottom>
                     {APP_DESC}
@@ -122,11 +137,10 @@ const Home = () => {
                 Quickly write and test your algorithims and test them on some files in an all in one platform. 
                 </Typography>
             </Container>
-            {/* End hero unit */}
+
             <Container maxWidth="md" component="main">
                 <div className={classes.cardsContainer}>
                 {cards.map((card) => (
-                    // Enterprise card is full width at sm breakpoint
                     <Card className={classes.card}>
                         <CardHeader
                         title={card.title}
@@ -154,7 +168,7 @@ const Home = () => {
             <br/>
             <Container className={classes.startCoding}>
                 <Button className={classes.startCodingBtn} onClick={() => startCoding()}>
-                    <Typography component="h1" variant="h6" align="center" color="textPrimary" gutterBottom>
+                    <Typography component="h1" variant="h6" align="center">
                         Start coding!
                     </Typography>
                 </Button>

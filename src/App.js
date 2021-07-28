@@ -8,6 +8,7 @@ import './styles/App.css';
 import AlertComp from './common/Alerts';
 import { Context } from './common/Store';
 import MenuAppBar from './common/MenuAppBar';
+import AppFooter from './common/AppFooter';
 
 import Login from './components/authentication/Login';
 import Signup from './components/authentication/Signup';
@@ -21,30 +22,34 @@ const App = () => {
     const [state ] = useContext(Context);
 
     return (
-        <ThemeProvider theme={theme}>
-            <MenuAppBar />
-            <AlertComp />
-            <Switch>
-                <Route path="/" exact>
-                    <Home />
-                </Route>
-                <Route path="/login">
-                    <Login />
-                </Route>
-                <Route path="/signup">
-                    <Signup />
-                </Route>
-                <Route path="/profile">
-                    <div>{!state.isAuthenticated ? <Login /> : <Profile />}</div>
-                </Route>
-                <Route path="/file-coding">
-                    <div>{!state.isAuthenticated ? <Login /> : <Playground />}</div>
-                </Route>
-                <Route path="/browse-code">
-                    <div>{!state.isAuthenticated ? <Login /> : <BrowseCode />}</div>
-                </Route>
-            </Switch>
-        </ThemeProvider>
+        <div style={{height: "100vh"}}>
+            <ThemeProvider theme={theme} style={{display: "flex", flexDirection: "column"}}>
+                <MenuAppBar />
+                <AlertComp />
+                <Switch style={{flexGrow: 4}}>
+                    <Route path="/" exact>
+                        <Home />
+                    </Route>
+                    <Route path="/login">
+                        <Login />
+                    </Route>
+                    <Route path="/signup">
+                        <Signup />
+                    </Route>
+                    <Route path="/profile">
+                        <div>{!state.isAuthenticated ? <Login /> : <Profile />}</div>
+                    </Route>
+                    <Route path="/file-coding">
+                        <div>{!state.isAuthenticated ? <Login /> : <Playground />}</div>
+                    </Route>
+                    <Route path="/browse-code">
+                        <BrowseCode />
+                    </Route>
+                </Switch>
+                <AppFooter style={{flex: 0}}/>
+            </ThemeProvider>
+        </div>
+
     );
 }
 

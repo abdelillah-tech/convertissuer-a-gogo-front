@@ -205,6 +205,9 @@ const useStyles = makeStyles((theme) => ({
     },
     statsItemValue: {
         fontSize: "30px"
+    },
+    spacer: {
+        height: "110px"
     }
 }));
 
@@ -653,6 +656,9 @@ const Editor = () => {
                         </div>
                 </div>
             </div>
+            { !state.selectedFile.url &&
+                <div className={classes.spacer}></div>
+            }
         </div>
     );
 }

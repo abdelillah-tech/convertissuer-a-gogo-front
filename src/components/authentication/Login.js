@@ -65,7 +65,7 @@ const Login = () => {
                     type: "LOGIN",
                     payload: resJson
                 })
-                history.push("/playground");
+                history.push("/file-coding");
             }).catch(e => {
                 pubMessage(e, 'Sorry! Something went wrong. Please try again!', alertType.error)
                 reset(

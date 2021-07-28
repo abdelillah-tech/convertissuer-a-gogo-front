@@ -7,9 +7,9 @@ import * as serviceWorker from './serviceWorker';
 import Store from './common/Store';
 
 ReactDOM.render(
-    <Router>
-        <Store>
-            <App />
+    <Router id="yooo" style={{height:"100%"}}>
+        <Store style={{height:"100%"}}>
+            <App style={{height:"100%"}}/>
         </Store>
     </Router>,
     document.getElementById('root')

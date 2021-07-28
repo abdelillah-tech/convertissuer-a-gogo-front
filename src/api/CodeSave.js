@@ -32,24 +32,14 @@ const getCodes = (token, language) => {
             });
 }
 
-const getAllCodes = (token) => {
+const getAllCodes = () => {
     return API
-        .get(`/code-save/codes`,
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+        .get(`/code-save/codes`);
 }
 
-const getAllCodesByName = (token, name) => {
+const getAllCodesByName = (name) => {
     return API
-        .get(`/code-save/code?name=${name}`,
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+        .get(`/code-save/code?name=${name}`);
 }
 
 const deleteCode = (uid, token) => {
