@@ -239,7 +239,7 @@ const Editor = () => {
 
     const [results, setResults] = useState(null);
 
-    const [similarity, setSimilarity] = useState({codeToken: null, percent: 0});
+    const [similarity, setSimilarity] = useState({token: null, percent: 0});
 
     const [codeStats, setCodeStats] = useState({
         time: 0,
@@ -647,7 +647,7 @@ const Editor = () => {
                                 <div className={classes.statsItemValue}>&nbsp;{codeStats.outputFileSize.value}&nbsp;{codeStats.outputFileSize.unit}</div> 
                             </div>
                             <div className={classes.statsItem}>
-                                <div className={classes.statsItemTitle}>Similarity</div> 
+                                <div className={classes.statsItemTitle}>Similarity { similarity.token && <span>(codeID: {similarity.token.codeId})</span>}</div> 
                                 <div className={classes.statsItemValue}>&nbsp;{similarity.percent.toFixed(2)}&nbsp;%</div> 
                             </div>
                         </div>
