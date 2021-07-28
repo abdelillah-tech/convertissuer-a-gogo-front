@@ -178,17 +178,33 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "start",
         padding: "4px",
     },
-    statsItem: {
-        display: "flex",
-        flexDirection: "row",
-        margin: "8px"
-    },
     statsBody: {
         backgroundColor: "#272822",
-        color: "white",
         borderTop: "2px solid #ff8C00",
         borderBottomRightRadius: "10px",
-        borderBottomLeftRadius: "10px"
+        borderBottomLeftRadius: "10px",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+
+
+    },
+    statsItem: {
+        flex: "auto",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        margin: "8px",
+        backgroundColor: "#ff8C00",
+        padding: "5px",
+        borderRadius: "5px",
+    },
+    statsItemTitle: {
+        marginBottom: "5px"
+    },
+    statsItemValue: {
+        fontSize: "30px"
     }
 }));
 
@@ -223,7 +239,7 @@ const Editor = () => {
 
     const [results, setResults] = useState(null);
 
-    const [similarity, setSimilarity] = useState(0);
+    const [similarity, setSimilarity] = useState({codeToken: null, percent: 0});
 
     const [codeStats, setCodeStats] = useState({
         time: 0,
@@ -618,21 +634,21 @@ const Editor = () => {
                         </div>
                         <div className={classes.statsBody}>
                             <div className={classes.statsItem}>
-                                <div>Execution:</div> 
-                                <div>&nbsp;{codeStats.time}&nbsp;ms</div> 
+                                <div className={classes.statsItemTitle}>Run time</div> 
+                                <div className={classes.statsItemValue}>&nbsp;{codeStats.time}&nbsp;ms</div> 
                             </div>
                             <div className={classes.statsItem}>
-                                <div>Input file:</div> 
-                                <div>&nbsp;{codeStats.inputFileSize.value}&nbsp;{codeStats.inputFileSize.unit}</div> 
+                                <div className={classes.statsItemTitle}>Input</div> 
+                                <div className={classes.statsItemValue}>&nbsp;{codeStats.inputFileSize.value}&nbsp;{codeStats.inputFileSize.unit}</div> 
                                 
                             </div>
                             <div className={classes.statsItem}>
-                                <div>Output file:</div> 
-                                <div>&nbsp;{codeStats.outputFileSize.value}&nbsp;{codeStats.outputFileSize.unit}</div> 
+                                <div className={classes.statsItemTitle}>Output</div> 
+                                <div className={classes.statsItemValue}>&nbsp;{codeStats.outputFileSize.value}&nbsp;{codeStats.outputFileSize.unit}</div> 
                             </div>
                             <div className={classes.statsItem}>
-                                <div>Code resemblance:</div> 
-                                <div>&nbsp;{similarity}&nbsp;%</div> 
+                                <div className={classes.statsItemTitle}>Similarity</div> 
+                                <div className={classes.statsItemValue}>&nbsp;{similarity.percent.toFixed(2)}&nbsp;%</div> 
                             </div>
                         </div>
                 </div>
