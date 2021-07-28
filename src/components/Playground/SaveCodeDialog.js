@@ -9,11 +9,13 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
+import Checkbox from '@material-ui/core/Checkbox';
 import CodeSaveService from '../../api/CodeSave';
 import { Context } from "../../common/Store";
 import pubMessage from '../../common/MessagePublisher';
 import alertType from '../../common/AlertTypes';
 import SaveIcon from '@material-ui/icons/Save';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -37,6 +39,7 @@ const SaveCodeDialog = ({code, language, savedCode}) => {
     const [open, setOpen] = React.useState(false);
 
     const [name, setName] = useState("")
+    const [isPrivate, setIsPrivate] = useState(false)
 
     const handleClickOpen = () => {
         if(code.id !== null){
@@ -55,6 +58,7 @@ const SaveCodeDialog = ({code, language, savedCode}) => {
             code: code.code,
             language: language,
             name: name,
+            isPrivate
         }
         CodeSaveService.save(data, state.token)
             .then((responseSaveCode) => {
@@ -76,6 +80,9 @@ const SaveCodeDialog = ({code, language, savedCode}) => {
         setOpen(false);
     }
     
+    const handleIsPrivate = (event) => {
+        setIsPrivate(event.target.checked)
+    }
     const handleUpdate = () => {
         CodeSaveService.update(code, state.token)
             .then((response) => {
@@ -124,6 +131,16 @@ const SaveCodeDialog = ({code, language, savedCode}) => {
                         type="text"
                         onChange={onChangeName}
                         fullWidth
+                    />
+
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                onChange={handleIsPrivate}
+                                color="primary"
+                                />
+                        }
+                        label="hide from browsing page"
                     />
                 </DialogContent>
                 <DialogActions>

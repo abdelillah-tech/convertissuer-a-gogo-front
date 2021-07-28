@@ -32,6 +32,26 @@ const getCodes = (token, language) => {
             });
 }
 
+const getAllCodes = (token) => {
+    return API
+        .get(`/code-save/codes`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+}
+
+const getAllCodesByName = (token, name) => {
+    return API
+        .get(`/code-save/code?name=${name}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+}
+
 const deleteCode = (uid, token) => {
     return API
         .delete(`/user/code/${uid}`,
@@ -42,4 +62,4 @@ const deleteCode = (uid, token) => {
             });
 }
 
-export default { save, update, getCodes, deleteCode };
+export default { save, update, getCodes, deleteCode, getAllCodes, getAllCodesByName };

@@ -75,7 +75,7 @@ export default function MenuAppBar() {
             setMenu([
                 <MenuItem key="playground" onClick={handleClose}>
                     <Link to="/file-coding" className={classes.links}>
-                        File Coding
+                        File coding
                     </Link>
                 </MenuItem>,
                 <MenuItem key="profile" onClick={handleClose}>
@@ -112,13 +112,38 @@ export default function MenuAppBar() {
                 <Toolbar className={classes.toolBar}>
                     <div className={classes.toolBarItems}>
                         <Link
+                            style={{margin: "10px"}}
                             to={{
                                 pathname: "/",
                             }}
                             className={classes.links}
                             >
-                            <Typography variant="h6" className={classes.title} to="/home">
+                            <Typography variant="h5" className={classes.title} to="/home">
                                 {APP_NAME}
+                            </Typography>
+                        </Link>
+
+                        <Link
+                            style={{margin: "10px"}}
+                            to={{
+                                pathname: "/file-coding",
+                            }}
+                            className={classes.links}
+                            >
+                            <Typography variant="h6" className={classes.title} to="/home">
+                                File coding
+                            </Typography>
+                        </Link>
+
+                        <Link
+                            style={{margin: "10px"}}
+                            to={{
+                                pathname: "/browse-code",
+                            }}
+                            className={classes.links}
+                            >
+                            <Typography variant="h6" className={classes.title} to="/home">
+                                Browse
                             </Typography>
                         </Link>
                     </div>

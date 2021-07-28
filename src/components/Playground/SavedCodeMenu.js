@@ -31,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
         margin: "0px",
         padding: "15px",
         width: "100%"
+    },
+    savedCodeID: {
+        color: "grey"
     }
 }));
 
@@ -105,7 +108,7 @@ export default function SavedCodeMenu({ code, sendCodeToEditor }) {
                         <span 
                             onClick={() => handleSelect(code)}
                             className={classes.savedCodeTitle}>
-                            {code.name}
+                            <span className={classes.savedCodeID}>ID {code.id}</span>: {code.name}
                         </span>
                         
                         <IconButton 

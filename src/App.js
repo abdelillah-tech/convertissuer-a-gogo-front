@@ -13,6 +13,7 @@ import Login from './components/authentication/Login';
 import Signup from './components/authentication/Signup';
 import Profile from './components/user/Profile';
 import Home from './components/home/Home';
+import BrowseCode from './components/browse/BrowseCode';
 import Playground from './components/Playground/Playground';
 
 const App = () => {
@@ -38,6 +39,9 @@ const App = () => {
                 </Route>
                 <Route path="/file-coding">
                     <div>{!state.isAuthenticated ? <Login /> : <Playground />}</div>
+                </Route>
+                <Route path="/browse-code">
+                    <div>{!state.isAuthenticated ? <Login /> : <BrowseCode />}</div>
                 </Route>
             </Switch>
         </ThemeProvider>
