@@ -207,7 +207,7 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "30px"
     },
     spacer: {
-        height: "110px"
+        height: "130px"
     }
 }));
 

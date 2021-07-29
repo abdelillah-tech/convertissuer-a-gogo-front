@@ -88,8 +88,8 @@ const useStyles = makeStyles((theme) => ({
       title: 'Languages',
       subheader: 'Some popular languages',
       description: [
-        'Javascipt',
-        'Python',
+        'Javascipt (Node 12)',
+        'Python (3.8)',
         '(coming) C',
         '(coming) C++',
       ],
