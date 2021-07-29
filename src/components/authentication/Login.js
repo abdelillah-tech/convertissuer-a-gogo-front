@@ -26,7 +26,8 @@ const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
         flexWrap: 'wrap',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        paddingBottom: "500px"
     },
     container: {
         display: 'flex',

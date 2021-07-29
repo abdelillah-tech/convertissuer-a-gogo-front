@@ -49,7 +49,7 @@ const Playground = () => {
     const classes = useStyles();
 
     return (
-        <div className={classes.testContainer}>
+        <div className={classes.testContainer} >
             <Editor classes={classes.paper} />
             <FileReader classes={classes.reader} />
         </div>

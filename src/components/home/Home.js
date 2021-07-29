@@ -130,10 +130,10 @@ const Home = () => {
     return(
         <div style={{backgroundImage: 'url(' + require('../../images/background/background.jpg') + ')', height: "100%"}}>
             <Container maxWidth="sm" component="main" className={classes.heroContent}>
-                <Typography component="h1" variant="h4" align="center" color="textPrimary" gutterBottom>
+                <Typography component="h1" fontWeight="2000" variant="h4" align="center" color="textPrimary" gutterBottom>
                     {APP_DESC}
                 </Typography>
-                <Typography variant="h5" align="center" color="textSecondary" component="p">
+                <Typography variant="h5" fontWeight="fontWeightBold" align="center" color="textPrimary" component="p">
                 Quickly write and test your algorithims and test them on some files in an all in one platform. 
                 </Typography>
             </Container>

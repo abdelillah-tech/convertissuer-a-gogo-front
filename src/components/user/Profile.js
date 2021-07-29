@@ -12,17 +12,23 @@ import { Context } from "../../common/Store";
 import jwt_decode from "jwt-decode";
 import PubSub from 'pubsub-js';
 import alertType from '../../common/AlertTypes';
+import { SiPython } from 'react-icons/si';
+import { SiJavascript } from 'react-icons/si';
 
 const useStyles = makeStyles((theme) => ({
     container: {
         display: 'flex',
         flexWrap: 'wrap',
-        justifyContent: "center"
+        justifyContent: "center",
+        marginBottom: "500px"
     },
     card: {
         marginTop: theme.spacing(10),
         justifyContent: 'center',
         maxWidth: 400,
+    },
+    cardContent: {
+        border: "3px solid #ff8C00"
     },
     avatar: {
         width: theme.spacing(10),
@@ -101,22 +107,35 @@ const Profile = () => {
                         <Avatar className={classes.avatar}>{user.email ? user.email.charAt(0).toUpperCase(): "@"}</Avatar>
                     }
                     title={`ID:${user.id} - ${user.email}`}
-                    subheader={`subheader`}
+                    subheader={`${user.name}`}
                 />
-                <CardContent>
+                <CardContent className={classes.cardContent}>
                     <Typography variant="h4" align="center"></Typography>
                     <div>
                         <h4>Your codes:</h4>
-                        <ul>
-                        {state.codesList.map((code) => (
-                            <li>
-                                {code.name} ({code.language}) <Button className={classes.loadBtn} onClick={() => loadCode(code)}>Load</Button>
-                            </li>
-                        ))}
-                        </ul>
+                        {state.codesList.length > 0 &&
+                            <ul>
+                            {state.codesList.map((code) => (
+                                <li style={{ margin: "4px"}}>
+                                    ID: {code.id} 
+                                    &nbsp;
+                                    {code.language === "javascript" && <SiJavascript></SiJavascript>}
+                                    {code.language === "python" && <SiPython></SiPython>}
+                                    &nbsp;
+                                    {code.name}
+                                </li>
+                            ))}
+                            </ul>
+                        }
+
+                        {state.codesList.length == 0 &&
+                            <Typography align="center">You havn't saved any codes</Typography>
+                        }
                     </div>
                 </CardContent>
             </Card>
+
+            <div styles={{height: "666px"}}></div>
         </div>
     );
 }

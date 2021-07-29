@@ -81,7 +81,7 @@ const BrowseCode = () => {
     return (
         <div style={{height: "100%", backgroundImage: 'url(' + require('../../images/background/background.jpg') + ')',padding: "20px"}}>
             <Container maxWidth="sm" component="main">
-                <Typography component="h1" variant="h4" align="center" color="textPrimary" gutterBottom className={classes.title}>
+                <Typography component="h1" fontWeight="fontWeightBold" variant="h4" align="center" color="textPrimary" gutterBottom className={classes.title}>
                     Browse all the saved codes
                 </Typography>
             </Container>
@@ -91,7 +91,7 @@ const BrowseCode = () => {
                     <SearchBar
                         style={{borderBottom: "2px solid #ff8C00", }}
                         value={searched}
-                        placeholder="Search by saved name"
+                        placeholder="Search by saved name or ID"
                         onChange={(searchVal) => requestSearch(searchVal)}
                         onCancelSearch={() => cancelSearch()}
                         />
