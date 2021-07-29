@@ -92,7 +92,7 @@ const FileReader = () => {
                                 <Typography>Edited file</Typography>
                                 { 
                                     state.resultFileUrl 
-                                        ? <Link to={state.resultFileUrl} target="_blank" download>
+                                        ? <Link to={state.resultFileUrl} target="_blank">
                                             <IconButton><CloudDownloadIcon style={{ color: "white" }}></CloudDownloadIcon></IconButton>
                                         </Link>
                                         : <div></div>

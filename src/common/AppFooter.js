@@ -58,10 +58,8 @@ export default function AppFooter() {
         <div className={classes.root}>
             <AppBar position="static" color="primary">
                 <Container maxWidth="md">
-                    <Toolbar>
-                        <Typography variant="body1" color="inherit">
+                    <Toolbar align="center" style={{display: "flex", justifyContent: "center"}}>
                             © 2021 Maxime d'Harboullé and Abdelillah Ghomari
-                        </Typography>
                     </Toolbar>
                 </Container>
             </AppBar>
