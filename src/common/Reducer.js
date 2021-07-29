@@ -31,6 +31,7 @@ const Reducer = (state, action) => {
         case "RESULT_FILE":
             return {
                 ...state,
+                resultFileKey: action.payload.key,
                 resultFileUrl: action.payload.url
             };
         default:

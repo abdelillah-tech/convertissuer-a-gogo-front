@@ -35,15 +35,7 @@ const Playground = () => {
     const [state, dispatch] = useContext(Context);
 
     useEffect(() => {
-        FileUploadService.getFiles(state.token)
-            .then((response) => {
-                dispatch({
-                    type: "FILES",
-                    payload: response.data
-                })
-            }).catch(e => {
-                pubMessage(e, 'Sorry! We cannot load your files for the moment', alertType.error)
-            })
+        
     }, []);
 
     const classes = useStyles();

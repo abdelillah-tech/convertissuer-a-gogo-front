@@ -275,6 +275,7 @@ const Editor = () => {
 
     useEffect(() => {
         getCodes();
+        getFiles()
     }, [])
     const onChangeCode = (value) => {
         let currentCode = code

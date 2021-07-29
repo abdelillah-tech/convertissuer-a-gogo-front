@@ -4,6 +4,7 @@ import { Context } from "../../common/Store";
 import { Typography, Link } from '@material-ui/core';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import IconButton from '@material-ui/core/IconButton';
+import DownloadLink from "react-download-link";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -90,13 +91,14 @@ const FileReader = () => {
                             className={classes.readerTitle}>
                             <h3 className={classes.flexH}>
                                 <Typography>Edited file</Typography>
-                                { 
+                                {/* { 
                                     state.resultFileUrl 
-                                        ? <Link to={state.resultFileUrl} target="_blank">
-                                            <IconButton><CloudDownloadIcon style={{ color: "white" }}></CloudDownloadIcon></IconButton>
-                                        </Link>
+                                        ? 
+                                        // <Link to={state.resultFileUrl} download>
+                                        //     <IconButton><CloudDownloadIcon style={{ color: "white" }}></CloudDownloadIcon></IconButton>
+                                        // </Link>
                                         : <div></div>
-                                }
+                                } */}
                             </h3>
                         </div>
                         <div className={classes.iframeContainer}>
